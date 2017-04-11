@@ -1,8 +1,9 @@
 //
 //  TwoWayDictionary.swift
-//  Ecolo Model Testing
+//  EcoloFinal
 //
-//  Written by CanTheAlmighty on Github.  Modified by Jonathan J. Lee.
+//  Created by Alex Cao on 4/10/17.
+//  Copyright © 2017 Alex Cao. All rights reserved.
 //
 
 import Foundation

@@ -1,9 +1,9 @@
 //
 //  Matrix.swift
-//  Ecolo Model Testing
+//  EcoloFinal
 //
-//  Created by Jonathan J. Lee on 3/28/17.
-//  Copyright © 2017 Jonathan J. Lee. All rights reserved.
+//  Created by Alex Cao on 4/10/17.
+//  Copyright © 2017 Alex Cao. All rights reserved.
 //
 
 import Foundation

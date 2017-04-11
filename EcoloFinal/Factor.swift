@@ -1,9 +1,9 @@
 //
-//  SavannaAbioticElement.swift
-//  Ecolo Model Testing
+//  Factor.swift
+//  EcoloFinal
 //
-//  Created by Jonathan J. Lee on 2/28/17.
-//  Copyright © 2017 Jonathan J. Lee. All rights reserved.
+//  Created by Alex Cao on 4/10/17.
+//  Copyright © 2017 Alex Cao. All rights reserved.
 //
 
 import Foundation
@@ -54,9 +54,9 @@ class Factor: CustomStringConvertible, Hashable {
     
     func lotkaVolterra() {
         switch type {
-            case .Producer: lvProducer()
-            case .Consumer: lvConsumer()
-            default: break
+        case .Producer: lvProducer()
+        case .Consumer: lvConsumer()
+        default: break
         }
     }
     

@@ -1,9 +1,9 @@
 //
 //  Ecosystem.swift
-//  Ecolo Model Testing
+//  EcoloFinal
 //
-//  Created by Jonathan J. Lee on 2/28/17.
-//  Copyright © 2017 Jonathan J. Lee. All rights reserved.
+//  Created by Alex Cao on 4/10/17.
+//  Copyright © 2017 Alex Cao. All rights reserved.
 //
 
 import Foundation
@@ -84,13 +84,13 @@ class Ecosystem: CustomStringConvertible, EcosystemProtocol, FactorDelegate {
     func getFactors() -> TwoWayDictionary<Int, Factor> {
         return factors
     }
- 
+    
     func nextCycle() {
         cycle += 1
         for _ in 0..<eulerIntervals {
             /*for factor in factors.values {
-                factor.nextCycle()
-            }*/
+             factor.nextCycle()
+             }*/
             for factor in factors.values {
                 
                 factor.update()
