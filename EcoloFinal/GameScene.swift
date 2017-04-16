@@ -20,28 +20,58 @@ class GameScene: SKScene {
     }
     
     func randomPointOnGround() -> CGPoint {
-        return CGPoint(x: random(min: frame.size.width * -1 / 2 + 150, max: frame.size.width / 2 - 150), y: random(min: frame.size.height * -1 / 2 + 150, max: frame.size.height * -3 / 10))
+        return CGPoint(x: random(min: frame.size.width * -1 / 2 + 150, max: frame.size.width / 2 - 150), y: random(min: frame.size.height * -1 / 2 + 75, max: frame.size.height * -3 / 10))
     }
     
-    // For the moment, just adding a single wolf to the view
     
-    let wolf = SKSpriteNode(imageNamed: "wolf")
+    var wolves = [SKSpriteNode]()
     
-    var wolfDirection = -1
+    var wolfDirection = [SKSpriteNode: Int]()
+    
+    //var wolfDirection = -1
+    
+    func addWolf() {
+        let newWolf = SKSpriteNode(imageNamed: "wolf")
+        wolves.append(newWolf)
+        newWolf.position = randomPointOnGround()
+        
+        newWolf.xScale = 0.2
+        newWolf.yScale = 0.2
+        newWolf.zPosition = 3
+        
+        wolfDirection[newWolf] = -1
+        
+        self.addChild(newWolf)
+    }
+    
+    func deleteWolf() {
+        if wolves.count > 0 {
+            wolfDirection.removeValue(forKey: wolves[wolves.count - 1])
+            wolves[wolves.count - 1].removeFromParent()
+            wolves.remove(at: wolves.count - 1)
+        } else {
+            print("no wolves in ecosystem")
+        }
+        
+    }
     
     override func didMove(to view: SKView) {
         
         //addOrganism(name: "wolf")
         
-        wolf.position = randomPointOnGround()
+        for wolf in wolves {
+            wolf.position = randomPointOnGround()
         
-        wolf.xScale = 0.2
-        wolf.yScale = 0.2
-        wolf.zPosition = 3
+            wolf.xScale = 0.2
+            wolf.yScale = 0.2
+            wolf.zPosition = 3
+            
+            wolfDirection[wolf] = -1
+            
+            self.addChild(wolf)
+        }
         
-        self.addChild(wolf)
-        
-        run(SKAction.repeatForever(SKAction.sequence([SKAction.run(moveOrganism), SKAction.wait(forDuration: 3.0)])))
+        run(SKAction.repeatForever(SKAction.sequence([SKAction.run(moveOrganisms), SKAction.wait(forDuration: Double(random(min: 2.0, max: 6.0)))])))
         
     }
     
@@ -65,31 +95,48 @@ class GameScene: SKScene {
         
     }
 */
-    func moveOrganism() {
+    
+    func shortestDistanceBetweenPoints(_ p1: CGPoint, _ p2: CGPoint) -> Float {
+        return hypotf(Float(p1.x - p2.x), Float(p1.y - p2.y))
+    }
+    
+    func moveOrganisms() {
+        for wolf in wolves {
+        let pointToGo = randomPointOnGround()
         
-        let destination = randomPointOnGround()
+        var destination: CGPoint
         
-        let actionMove = SKAction.move(to: destination, duration: TimeInterval(random(min: 4.0, max: 6.0)))
+        let distance = shortestDistanceBetweenPoints(wolf.position, pointToGo)
+        
+        if distance < 150 {
+            destination = wolf.position
+        } else {
+            destination = pointToGo
+        }
+        wolf.zPosition = destination.y * -1 / 100
+            
+        let actionMove = SKAction.move(to: destination, duration: TimeInterval(random(min: 2.0, max: 6.0)))
         
         if wolf.position.x < destination.x {
-            if wolfDirection == 1 {
+            if wolfDirection[wolf] == 1 {
                 wolf.run(actionMove)
             } else {
-                wolfDirection = 1
+                wolfDirection[wolf] = 1
                 wolf.xScale = wolf.xScale * -1
                 wolf.run(actionMove)
             }
             
         } else if wolf.position.x > destination.x {
-            if wolfDirection == -1 {
+            if wolfDirection[wolf] == -1 {
                 wolf.run(actionMove)
             } else {
-                wolfDirection = -1
+                wolfDirection[wolf] = -1
                 wolf.xScale = wolf.xScale * -1
                 wolf.run(actionMove)
             }
         } else {
             wolf.run(actionMove)
+        }
         }
     }
     
@@ -100,7 +147,7 @@ class GameScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
-            guard let mountain = childNode(withName: "MountainNode"), let mountainButton = childNode(withName: "MountainButtonNode") else {
+            guard let mountain = childNode(withName: "MountainNode"), let mountainButton = childNode(withName: "MountainButtonNode"), let addWolfButton = childNode(withName: "AddWolfButtonNode"), let deleteWolfButton = childNode(withName: "DeleteWolfButtonNode") else {
                 break
             }
             
@@ -113,6 +160,11 @@ class GameScene: SKScene {
                     mountain.run(animate!)
                 }
             
+            } else if addWolfButton.contains(location) {
+                addWolf()
+                
+            } else if deleteWolfButton.contains(location) {
+                deleteWolf()
             }
             
         }
