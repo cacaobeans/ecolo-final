@@ -132,26 +132,6 @@ class GameScene: SKScene {
         }
     }
     
-    
-    func move() {
-        let pointToGo = randomPointOnGround()
-                    
-        var destination: CGPoint
-    
-        let distance = shortestDistanceBetweenPoints(organism.position, pointToGo)
-        
-        if distance < 150 {
-            destination = organism.position
-        } else {
-            destination = pointToGo
-        }
-        organism.zPosition = destination.y * -1 / 100
-        
-        faceAndMoveToDestination(organism: organism, destination: destination)
-        
-    }
-
-    
     func moveOrganisms() {
         for (organismName, organismType) in organisms {
             
