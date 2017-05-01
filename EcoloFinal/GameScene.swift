@@ -12,6 +12,16 @@ import GameplayKit
 protocol EcosystemScene {
     init(delegate: EcosystemSceneDelegate)
     func render(factors: [Factor: [Factor: Double]])
+    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool
+    func evolveEcosystem()
+}
+
+enum SpriteStatus {
+    case Dying
+    case MarkedForDeath
+    case Hunting
+    case Standby
+    case Introducing
 }
 
 class GameScene: SKScene, EcosystemScene {
@@ -27,7 +37,15 @@ class GameScene: SKScene, EcosystemScene {
     }
     
     func render(factors: [Factor: [Factor: Double]]) {
-        print("Cannot render factors yet.")
+        print("Cannot render factors yet")
+    }
+    
+    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool {
+        return (delegate as! EcosystemSceneDelegate).introduceFactor(named: name, ofType: type, withLevel: level)
+    }
+    
+    func evolveEcosystem() {
+        (delegate as! EcosystemSceneDelegate).evolveEcosystem()
     }
     
     // Randomization helper functions:
