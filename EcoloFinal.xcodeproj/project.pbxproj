@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04B2BCF91EB3BCDF003ED938 /* Factor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B2BCF61EB3BCDF003ED938 /* Factor.swift */; };
+		04B2BCFA1EB3BCDF003ED938 /* Ecosystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B2BCF71EB3BCDF003ED938 /* Ecosystem.swift */; };
+		04B2BCFB1EB3BCDF003ED938 /* FactorData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04B2BCF81EB3BCDF003ED938 /* FactorData.plist */; };
 		592374011E92B03C00878806 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592374001E92B03C00878806 /* AppDelegate.swift */; };
 		592374031E92B03C00878806 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 592374021E92B03C00878806 /* GameScene.sks */; };
 		592374051E92B03C00878806 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 592374041E92B03C00878806 /* Actions.sks */; };
@@ -15,13 +18,12 @@
 		5923740C1E92B03C00878806 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5923740A1E92B03C00878806 /* Main.storyboard */; };
 		5923740E1E92B03C00878806 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5923740D1E92B03C00878806 /* Assets.xcassets */; };
 		592374111E92B03C00878806 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5923740F1E92B03C00878806 /* LaunchScreen.storyboard */; };
-		5977BEDB1E9C0B2A003BF595 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5977BEDA1E9C0B2A003BF595 /* Matrix.swift */; };
-		5977BEDD1E9C0B43003BF595 /* Ecosystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5977BEDC1E9C0B43003BF595 /* Ecosystem.swift */; };
-		5977BEDF1E9C0B58003BF595 /* Factor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5977BEDE1E9C0B58003BF595 /* Factor.swift */; };
-		5977BEE11E9C0B82003BF595 /* TwoWayDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5977BEE01E9C0B82003BF595 /* TwoWayDictionary.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04B2BCF61EB3BCDF003ED938 /* Factor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Factor.swift; sourceTree = "<group>"; };
+		04B2BCF71EB3BCDF003ED938 /* Ecosystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ecosystem.swift; sourceTree = "<group>"; };
+		04B2BCF81EB3BCDF003ED938 /* FactorData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FactorData.plist; sourceTree = "<group>"; };
 		592373FD1E92B03B00878806 /* EcoloFinal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EcoloFinal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		592374001E92B03C00878806 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		592374021E92B03C00878806 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -32,10 +34,6 @@
 		5923740D1E92B03C00878806 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		592374101E92B03C00878806 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		592374121E92B03C00878806 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5977BEDA1E9C0B2A003BF595 /* Matrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
-		5977BEDC1E9C0B43003BF595 /* Ecosystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ecosystem.swift; sourceTree = "<group>"; };
-		5977BEDE1E9C0B58003BF595 /* Factor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Factor.swift; sourceTree = "<group>"; };
-		5977BEE01E9C0B82003BF595 /* TwoWayDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwoWayDictionary.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +47,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		04B2BCF51EB3BC8D003ED938 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				04B2BCF61EB3BCDF003ED938 /* Factor.swift */,
+				04B2BCF71EB3BCDF003ED938 /* Ecosystem.swift */,
+				04B2BCF81EB3BCDF003ED938 /* FactorData.plist */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		592373F41E92B03B00878806 = {
 			isa = PBXGroup;
 			children = (
@@ -73,10 +81,7 @@
 				592374041E92B03C00878806 /* Actions.sks */,
 				592374061E92B03C00878806 /* GameScene.swift */,
 				592374081E92B03C00878806 /* EcosystemViewController.swift */,
-				5977BEDC1E9C0B43003BF595 /* Ecosystem.swift */,
-				5977BEE01E9C0B82003BF595 /* TwoWayDictionary.swift */,
-				5977BEDE1E9C0B58003BF595 /* Factor.swift */,
-				5977BEDA1E9C0B2A003BF595 /* Matrix.swift */,
+				04B2BCF51EB3BC8D003ED938 /* Model */,
 				5923740A1E92B03C00878806 /* Main.storyboard */,
 				5923740D1E92B03C00878806 /* Assets.xcassets */,
 				5923740F1E92B03C00878806 /* LaunchScreen.storyboard */,
@@ -145,6 +150,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5923740C1E92B03C00878806 /* Main.storyboard in Resources */,
+				04B2BCFB1EB3BCDF003ED938 /* FactorData.plist in Resources */,
 				592374031E92B03C00878806 /* GameScene.sks in Resources */,
 				5923740E1E92B03C00878806 /* Assets.xcassets in Resources */,
 				592374111E92B03C00878806 /* LaunchScreen.storyboard in Resources */,
@@ -159,12 +165,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5977BEDB1E9C0B2A003BF595 /* Matrix.swift in Sources */,
 				592374071E92B03C00878806 /* GameScene.swift in Sources */,
-				5977BEE11E9C0B82003BF595 /* TwoWayDictionary.swift in Sources */,
-				5977BEDF1E9C0B58003BF595 /* Factor.swift in Sources */,
-				5977BEDD1E9C0B43003BF595 /* Ecosystem.swift in Sources */,
 				592374091E92B03C00878806 /* EcosystemViewController.swift in Sources */,
+				04B2BCFA1EB3BCDF003ED938 /* Ecosystem.swift in Sources */,
+				04B2BCF91EB3BCDF003ED938 /* Factor.swift in Sources */,
 				592374011E92B03C00878806 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

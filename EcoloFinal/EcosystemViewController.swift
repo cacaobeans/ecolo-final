@@ -10,12 +10,30 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
-class GameViewController: UIViewController {
+protocol EcosystemSceneDelegate: SKSceneDelegate {
+    @discardableResult func introduceFactor(_ newFactorName: String, ofType: FactorType, withLevel: Double) -> Bool
+}
 
+class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
 
+    var ecosystemModel: Ecosystem!
+    
+    @discardableResult func introduceFactor(_ newFactorName: String, ofType: FactorType, withLevel: Double) -> Bool {
+        return ecosystemModel.add(newFactorName, ofType: ofType, withLevel: withLevel)
+    }
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        ecosystemModel = Ecosystem(name: "Antarctic")
+        ecosystemModel.add("Sunlight", ofType: .Resource, withLevel: 3)
+        ecosystemModel.add("Phytoplankton", ofType: .Producer, withLevel: 2)
+        ecosystemModel.add("Fish", ofType: .Consumer, withLevel: 4)
+        ecosystemModel.add("Penguin", ofType: .Consumer, withLevel: 1)
+        ecosystemModel.add("Orca", ofType: .Consumer, withLevel: 1)
+        ecosystemModel.add("Leopard Seal", ofType: .Consumer, withLevel: 1)
+        ecosystemModel.add("Baleen Whale", ofType: .Consumer, withLevel: 0.5)
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.

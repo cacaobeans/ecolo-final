@@ -9,8 +9,28 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+protocol EcosystemScene {
+    init(delegate: EcosystemSceneDelegate)
+    func render(factors: [Factor: [Factor: Double]])
+}
 
+class GameScene: SKScene, EcosystemScene {
+    
+    // NEW MVC STUFF:
+    required init(delegate: EcosystemSceneDelegate) {
+        super.init()
+        self.delegate = delegate
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func render(factors: [Factor: [Factor: Double]]) {
+        print("Cannot render factors yet.")
+    }
+    
+    // Randomization helper functions:
     func random() -> CGFloat {
         return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
     }

@@ -1,109 +1,123 @@
 //
 //  Ecosystem.swift
-//  EcoloFinal
+//  Ecolo Model Testing
 //
-//  Created by Alex Cao on 4/10/17.
-//  Copyright © 2017 Alex Cao. All rights reserved.
+//  Created by Jonathan J. Lee on 4/26/17.
+//  Copyright © 2017 Jonathan J. Lee. All rights reserved.
 //
 
 import Foundation
 
-protocol EcosystemProtocol {
-    func add(_ factor: Factor)
-    func addPairing(factor1: Factor, factor2: Factor, effect1: Double, effect2: Double) -> Bool
-    func nextCycle()
-}
-
 protocol FactorDelegate {
-    func getCycle() -> Int
     func getEulerIntervals() -> Int
-    func getInteractionMatrix() -> InteractionMatrix
-    func getMortalityMatrix() -> Matrix
-    func getFactors() -> TwoWayDictionary<Int, Factor>
+    func getExtinctionThreshold() -> Double
+    func getFactorsWithInteractions() -> [Factor: [Factor: Double]]
 }
 
-class Ecosystem: CustomStringConvertible, EcosystemProtocol, FactorDelegate {
+class Ecosystem: CustomStringConvertible, FactorDelegate {
     
-    var nextFactorIndex = 0
-    var factors = TwoWayDictionary<Int, Factor>()
-    var interactionMatrix = InteractionMatrix(size: 1)!
-    var mortalityMatrix = Matrix(rowsY: 1, columnsX: 1)!
+    let name: String
+    let factorData: [String: [String: [String: String]]]
+    let eulerIntervals = 100
+    // Because the differential equations governing population are not integrable, population changes must be approximated using Euler's method.
+    // These are the number of intervals (i.e., the number of times the calculation repeats) per cycle.
+    // The higher the number, the more accurate the changes, but the slower the program.
+    let extinctionThreshold = 10e-3
+    // When the normalized population size drops below the extinction threshold, the population crashes and goes extinct due to lack of genetic diversity.
+    private var factors = [Factor: [Factor: Double]]()
+    // The first factor is the one being affected. The second factor is the one affecting it.
+    // The double is the interaction coefficient.
+    // If a factor is affecting itself, then that represents natural growth or death rates.
     
-    var cycle = 0
-    var description: String
-    var eulerIntervals = 100
-    
-    init(name: String) {
-        description = name
-    }
-    
-    func add(_ factor: Factor) {
-        factors[nextFactorIndex] = factor
-        if nextFactorIndex > 0 {
-            interactionMatrix.increaseSize()
-            mortalityMatrix.increaseRows()
+    init?(name: String) {
+        guard let path = Bundle.main.path(forResource: "FactorData", ofType: "plist"),
+            let data = NSDictionary(contentsOfFile: path) as? [String: [String: [String: String]]] else {
+            print("Failed to read in data at path FactorData.plist")
+            return nil
         }
-        nextFactorIndex += 1
+        self.name = name
+        self.factorData = data
     }
     
-    @discardableResult func addPairing(factor1: Factor, factor2: Factor, effect1: Double, effect2: Double) -> Bool {
-        guard factors.values.contains(factor1) && factors.values.contains(factor2) && interactionMatrix.size >= nextFactorIndex else {
-            print("Failed to add relationship \(effect1) to \(factor1) with \(effect2) to \(factor2)")
+    @discardableResult func add(_ newFactorName: String, ofType type: FactorType, withLevel level: Double) -> Bool {
+        
+        // Step 1: Retrieve the [String: String] dictionary of the new factor's Possible Interactions with all possible organisms, even those that aren't in this ecosystem.
+        // If we couldn't retrieve the PI, then that means that we don't have any data for the new factor and there's an error.
+        guard let nfPI = factorData[type.rawValue]?[newFactorName] else {
+            print("Failed to add \(newFactorName); couldn't find it in FactorData.plist")
             return false
         }
-        interactionMatrix.setElement(rowY: factors[factor1]!, columnX: factors[factor2]!, newElement: effect1)
-        interactionMatrix.setElement(rowY: factors[factor2]!, columnX: factors[factor1]!, newElement: effect2)
+        
+        // Step 2: Add the new factor to the main storage array with an empty interaction coefficient dictionary (ICD).
+        // We'll fill the ICD in Step 3.
+        let newFactor = Factor(newFactorName, type: type, level: level, delegate: self)
+        factors[newFactor] = [Factor: Double]() // This dictionary is the ICD.
+        
+        
+        // Step 3: Iterate through the main 'factors' dictionary.
+        // First, we look to see which of the existing factors will be interacting with this new one – namely, which of the existing factors has a corresponding coefficient in the NFPI.
+        // If we found a corresponding coefficient in the new factor's PI, then we add it to the ICD under the name of the existing factor.
+        for (existingFactor, _) in factors {
+            if let stringCoeffForNew = nfPI[existingFactor.name], let coeffForNewFactor = Double(stringCoeffForNew) {
+                factors[newFactor]![existingFactor] = coeffForNewFactor
+            }
+            
+            // Next, we see if any of the existing factors' PIs has a coefficient linking it to the new factor.
+            // If so, we add that coefficient to the appropriate existing factor's ICD under the name of the new factor.
+            if let stringCoeffForExisting = factorData[existingFactor.type.rawValue]?[existingFactor.name]?[newFactor.name],
+                let coeffForExistingFactor = Double(stringCoeffForExisting) {
+                factors[existingFactor]![newFactor] = coeffForExistingFactor
+            }
+        }
         return true
     }
     
-    @discardableResult func addNaturalChangeConstant(factor: Factor, constant: Double) -> Bool {
-        guard factors.values.contains(factor) && mortalityMatrix.rowsY >= nextFactorIndex else {
-            print("Failed to add change constant \(constant) to \(factor)")
-            return false
+    func nextCycle() {
+        for _ in 0 ..< eulerIntervals {
+            // In the first round, we calculate the minute changes (deltas) for all of the factors.
+            for (factor, _) in factors {
+                factor.calculateDelta()
+            }
+            // In the second round, we apply those deltas to each factor's level.
+            // The reason we can't do them both in one step is that in order to calculate the deltas, we need to access the levels of the factors before they're updated.  Only after we've safely computed all of the changes can we update this level.
+            for (factor, _) in factors {
+                factor.addDeltaToLevel()
+            }
         }
-        mortalityMatrix.setElement(rowY: factors[factor]!, columnX: 0, newElement: constant)
-        return true
     }
     
-    func getCycle() -> Int {
-        return cycle
+    
+    // The methods demanded by the delegate:
+    func getFactorsWithInteractions() -> [Factor : [Factor : Double]] {
+        return factors
+    }
+    
+    func getExtinctionThreshold() -> Double {
+        return extinctionThreshold
     }
     
     func getEulerIntervals() -> Int {
         return eulerIntervals
     }
     
-    func getInteractionMatrix() -> InteractionMatrix {
-        return interactionMatrix
+    // Diagnostic and informational functions:
+    var description: String {
+        return self.name
     }
     
-    func getMortalityMatrix() -> Matrix {
-        return mortalityMatrix
+    var currentState: String {
+        return factors.reduce("", {$0 + "\t \($1.0.name): \($1.0.level)"})
     }
     
-    func getFactors() -> TwoWayDictionary<Int, Factor> {
-        return factors
-    }
-    
-    func nextCycle() {
-        cycle += 1
-        for _ in 0..<eulerIntervals {
-            /*for factor in factors.values {
-             factor.nextCycle()
-             }*/
-            for factor in factors.values {
-                
-                factor.update()
+    var diagnostics: String {
+        var result = ""
+        for (factor, interactions) in factors {
+            result += "\(factor.name) – lvl \(factor.level):"
+            for (affectingFactor, coefficient) in interactions {
+                result += "\n\t\(coefficient) from \(affectingFactor.name)"
             }
+            result += "\n"
         }
-    }
-    
-    func printFactors() {
-        for factor in factors.values {
-            print(factor)
-        }
+        return result
     }
 }
-
-
-
