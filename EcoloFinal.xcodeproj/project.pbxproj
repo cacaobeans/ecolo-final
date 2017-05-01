@@ -15,6 +15,7 @@
 		5923740C1E92B03C00878806 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5923740A1E92B03C00878806 /* Main.storyboard */; };
 		5923740E1E92B03C00878806 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5923740D1E92B03C00878806 /* Assets.xcassets */; };
 		592374111E92B03C00878806 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5923740F1E92B03C00878806 /* LaunchScreen.storyboard */; };
+		593CBEEC1EB7BC8A00304313 /* SKOrganismNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593CBEEB1EB7BC8A00304313 /* SKOrganismNode.swift */; };
 		5977BEDB1E9C0B2A003BF595 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5977BEDA1E9C0B2A003BF595 /* Matrix.swift */; };
 		5977BEDD1E9C0B43003BF595 /* Ecosystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5977BEDC1E9C0B43003BF595 /* Ecosystem.swift */; };
 		5977BEDF1E9C0B58003BF595 /* Factor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5977BEDE1E9C0B58003BF595 /* Factor.swift */; };
@@ -32,6 +33,7 @@
 		5923740D1E92B03C00878806 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		592374101E92B03C00878806 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		592374121E92B03C00878806 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		593CBEEB1EB7BC8A00304313 /* SKOrganismNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKOrganismNode.swift; sourceTree = "<group>"; };
 		5977BEDA1E9C0B2A003BF595 /* Matrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		5977BEDC1E9C0B43003BF595 /* Ecosystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ecosystem.swift; sourceTree = "<group>"; };
 		5977BEDE1E9C0B58003BF595 /* Factor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Factor.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 				592374021E92B03C00878806 /* GameScene.sks */,
 				592374041E92B03C00878806 /* Actions.sks */,
 				592374061E92B03C00878806 /* GameScene.swift */,
+				593CBEEB1EB7BC8A00304313 /* SKOrganismNode.swift */,
 				592374081E92B03C00878806 /* EcosystemViewController.swift */,
 				5977BEDC1E9C0B43003BF595 /* Ecosystem.swift */,
 				5977BEE01E9C0B82003BF595 /* TwoWayDictionary.swift */,
@@ -162,6 +165,7 @@
 				5977BEDB1E9C0B2A003BF595 /* Matrix.swift in Sources */,
 				592374071E92B03C00878806 /* GameScene.swift in Sources */,
 				5977BEE11E9C0B82003BF595 /* TwoWayDictionary.swift in Sources */,
+				593CBEEC1EB7BC8A00304313 /* SKOrganismNode.swift in Sources */,
 				5977BEDF1E9C0B58003BF595 /* Factor.swift in Sources */,
 				5977BEDD1E9C0B43003BF595 /* Ecosystem.swift in Sources */,
 				592374091E92B03C00878806 /* EcosystemViewController.swift in Sources */,

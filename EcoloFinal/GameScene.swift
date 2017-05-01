@@ -45,6 +45,10 @@ class GameScene: SKScene {
     //dictionary storing "direction" all sprites are facing
     var organismDirection = [SKSpriteNode: Int]()
     
+    //dictionary storing action queues for all sprites
+    var organismActions = [SKSpriteNode: [SKAction]]()
+    
+    
     func addOrganism(organismName: String) {
         let newOrganism = SKSpriteNode(imageNamed: organismName)
         if organisms[organismName] == nil {
@@ -54,8 +58,9 @@ class GameScene: SKScene {
             organisms[organismName]!.append(newOrganism)
             
         }
-        
         organismDirection[newOrganism] = -1
+        
+        organismActions[newOrganism].insert(<#T##newElement: Element##Element#>, at: 0)
         
         newOrganism.position = randomPointOnGround()
         
@@ -81,7 +86,7 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         
-        for (organismName, organismType) in organisms {
+        for (_, organismType) in organisms {
             for organism in organismType {
         
                 organism.xScale = 0.2
@@ -126,6 +131,26 @@ class GameScene: SKScene {
             organism.run(actionMove)
         }
     }
+    
+    
+    func move() {
+        let pointToGo = randomPointOnGround()
+                    
+        var destination: CGPoint
+    
+        let distance = shortestDistanceBetweenPoints(organism.position, pointToGo)
+        
+        if distance < 150 {
+            destination = organism.position
+        } else {
+            destination = pointToGo
+        }
+        organism.zPosition = destination.y * -1 / 100
+        
+        faceAndMoveToDestination(organism: organism, destination: destination)
+        
+    }
+
     
     func moveOrganisms() {
         for (organismName, organismType) in organisms {
