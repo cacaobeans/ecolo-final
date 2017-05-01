@@ -9,23 +9,46 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+protocol EcosystemScene {
+    init(delegate: EcosystemSceneDelegate)
+    func render(factors: [Factor: [Factor: Double]])
+    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool
+    func evolveEcosystem()
+}
 
-    func random() -> CGFloat {
-        return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
+enum SpriteStatus {
+    case Dying
+    case MarkedForDeath
+    case Hunting
+    case Standby
+    case Introducing
+}
+
+class GameScene: SKScene, EcosystemScene {
+    
+    // NEW MVC STUFF:
+    required init(delegate: EcosystemSceneDelegate) {
+        super.init()
+        self.delegate = delegate
     }
     
-    func random(min: CGFloat, max: CGFloat) -> CGFloat {
-        return random() * (max - min) + min
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
-    func randomInt (min: Int , max: Int) -> Int {
-        return min + Int(arc4random_uniform(UInt32(max - min + 1)))
+    func render(factors: [Factor: [Factor: Double]]) {
+        print("Cannot render factors yet")
     }
     
-    func randomPointOnGround() -> CGPoint {
-        return CGPoint(x: random(min: frame.size.width * -1 / 2 + 50, max: frame.size.width / 2 - 50), y: random(min: frame.size.height * -1 / 2 + 50, max: frame.size.height * -3 / 10))
+    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool {
+        return (delegate as! EcosystemSceneDelegate).introduceFactor(named: name, ofType: type, withLevel: level)
     }
+    
+    func evolveEcosystem() {
+        (delegate as! EcosystemSceneDelegate).evolveEcosystem()
+    }
+    
+    // Randomization helper functions:
     
     /*
      THINGS TO DO
