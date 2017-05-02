@@ -29,16 +29,24 @@ class GameScene: SKScene, EcosystemScene {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func render(factors: [Factor: [Factor: Double]]) {
-        print("Cannot render factors yet")
-    }
-    
     @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool {
         return (delegate as! EcosystemSceneDelegate).introduceFactor(named: name, ofType: type, withLevel: level)
     }
     
     func evolveEcosystem() {
         (delegate as! EcosystemSceneDelegate).evolveEcosystem()
+    }
+    
+    func render(factors: [Factor: [Factor: Double]]) {
+        for (factor, _) in factors {
+            if organisms[factor.name] == nil {
+                organisms[factor.name] = Array(repeating: SKOrganismNode(organismName: factor.name, scene: self), count: desiredNumberOfSprites(factor: factor))
+            }
+        }
+    }
+    
+    func desiredNumberOfSprites(factor: Factor) -> Int {
+        return factor.standardPopulationSize * Int(ceil(log(factor.level + 1) / log(factor.populationRenderCurveLogBase)))
     }
     
     // Randomization helper functions:
@@ -56,20 +64,21 @@ class GameScene: SKScene, EcosystemScene {
      */
     
     //dictionary storing all organism sprites
-    var organisms = [String: [SKSpriteNode]]()
+    var organismNodes = [Factor: [SKOrganismNode]]()
     
     //dictionary storing "direction" all sprites are facing
-    var organismDirection = [SKSpriteNode: Int]()
+    var organismNodeDirections = [SKOrganismNode: Int]()
     
     //dictionary storing action queues for all sprites
-    var organismActions = [SKSpriteNode: [SKAction]]()
+    var organismNodeActions = [SKOrganismNode: [SKAction]]()
     
     
-    func addOrganism(organismName: String) {
-        let newOrganism = SKSpriteNode(imageNamed: organismName)
-        if organisms[organismName] == nil {
-            organisms[organismName] = [newOrganism]
-        }
+    func addOrganismNode(factor: Factor) -> Bool {
+        
+        guard organismNodes[factor] != nil, let newOrganismNode = SKSpriteNode(imageNamed: factor.name) else {return false}
+        
+        organismNodes[factor] = [newOrganismNode]
+        
         else {
             organisms[organismName]!.append(newOrganism)
             

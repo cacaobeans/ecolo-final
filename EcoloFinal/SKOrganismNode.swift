@@ -17,7 +17,11 @@ enum SpriteStatus {
     case Promenading
 }
 
-class SKOrganismNode {
+class SKOrganismNode: Hashable {
+    
+    static var nextHashValue = 0
+    var hashValue: Int
+    static func ==(skON1: SKOrganismNode, skON2: SKOrganismNode) -> Bool {return skON1.hashValue == skON2.hashValue}
     
     let organismName: String
     
@@ -49,6 +53,8 @@ class SKOrganismNode {
     init(organismName: String, scene: SKScene) {
         
         self.organismName = organismName
+        self.hashValue = SKOrganismNode.nextHashValue
+        SKOrganismNode.nextHashValue += 1
         sprite = SKSpriteNode(imageNamed: organismName)
         sprite.xScale = 0.2
         sprite.yScale = 0.2
