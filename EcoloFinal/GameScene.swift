@@ -16,13 +16,6 @@ protocol EcosystemScene {
     func evolveEcosystem()
 }
 
-enum SpriteStatus {
-    case Dying
-    case MarkedForDeath
-    case Hunting
-    case Standby
-    case Introducing
-}
 
 class GameScene: SKScene, EcosystemScene {
     
@@ -82,8 +75,6 @@ class GameScene: SKScene, EcosystemScene {
             
         }
         organismDirection[newOrganism] = -1
-        
-        organismActions[newOrganism].insert(<#T##newElement: Element##Element#>, at: 0)
         
         newOrganism.position = randomPointOnGround()
         
