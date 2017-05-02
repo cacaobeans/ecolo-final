@@ -19,15 +19,13 @@ enum SpriteStatus {
 
 class SKOrganismNode {
     
-    let organismName: String
-    
+    let factor: Factor
     let sprite: SKSpriteNode
-    
     var direction = Int()
-    
     var action: SKAction?
-
     let scene: SKScene
+    var spriteStatus: SpriteStatus
+    
     
     func random() -> CGFloat {
         return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
@@ -46,25 +44,60 @@ class SKOrganismNode {
     }
 
     
-    init(organismName: String, scene: SKScene) {
+    init?(factor: Factor, scene: SKScene) {
         
-        self.organismName = organismName
-        sprite = SKSpriteNode(imageNamed: organismName)
+        guard let s = SKSpriteNode(imageNamed: factor.name) else {
+            return nil
+        }
+        self.sprite = s
+        
+        self.factor = factor
+        
         sprite.xScale = 0.2
         sprite.yScale = 0.2
         sprite.zPosition = 3
         
+        spriteStatus = .Standby
         self.scene = scene
         
     }
     
-    func standby() {
-        //<--- run the action in the scene, or have the class take care of it?
+    func shortestDistanceBetweenPoints(_ p1: CGPoint, _ p2: CGPoint) -> Float {
+        return hypotf(Float(p1.x - p2.x), Float(p1.y - p2.y))
     }
     
+    func goToRandomPoint() -> SKAction {
+        let pointToGo = randomPointOnGround()
+        
+        var destination: CGPoint
+        
+        let distance = shortestDistanceBetweenPoints(sprite.position, pointToGo)
+        
+        if distance < 150 {
+            destination = sprite.position
+        } else {
+            destination = pointToGo
+        }
+        sprite.zPosition = destination.y * -1 / 100
+        
+        let movement = SKAction.move(to: destination, duration: TimeInterval(random(min: 2, max: 4)))
+        
+        return movement
+    }
+    
+    func standby() {
+        
+        action = SKAction.repeatForever(goToRandomPoint())
+        
+        sprite.run(action!)
+    
+    }
+    
+    
+
     //helps manage movement stuff (sets action, switches direction)
-    func faceAndMove(to destination: CGPoint, forDuration duration: Double) {
-        action = SKAction.move(to: destination, duration: duration)
+
+    func faceRightDirection(destination: CGPoint) {
         
         if sprite.position.x < destination.x {
             if direction == 1 {
@@ -80,6 +113,7 @@ class SKOrganismNode {
                 sprite.xScale = sprite.xScale * -1
             }
         }
+        
     }
     
     //How can we link the scene to the sprites within the NSOrganismSprite class?
@@ -94,23 +128,42 @@ class SKOrganismNode {
             sprite.xScale = sprite.xScale * -1
         }
         
-        faceAndMove(to: randomPointOnGround(), forDuration: 3)
+        let destination = randomPointOnGround()
+        faceRightDirection(destination: destination)
+        action = SKAction.move(to: destination, duration: 3)
+        
+        sprite.run(action!)
+        
     }
     
     func markForDeath() {
         action = nil
-        sprite.clearAllActions()
+        sprite.removeAllActions()
     }
     
     
     func die() {
+        
         let disintegrate = SKAction.fadeOut(withDuration: 1)
         let delete = SKAction.removeFromParent()
         
         action = SKAction.sequence([disintegrate, delete])
+        
+        sprite.run(action!)
+        
     }
     
     func hunt(target: SKOrganismNode) {
+        
+        let targetPosition = target.sprite.position
+        
+        faceRightDirection(destination: targetPosition)
+        let attack = SKAction.move(to: targetPosition, duration: 3)
+        let kill = SKAction.run({target.die()})
+        
+        action = SKAction.sequence([attack, kill])
+        
+        sprite.run(action!)
         
     }
     
