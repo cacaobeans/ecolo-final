@@ -34,14 +34,10 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         
         super.viewDidLoad()
         
-        ecosystemModel = Ecosystem(name: "Antarctic")
-        ecosystemModel.addNewFactor(named: "Sunlight", ofType: .Resource, withLevel: 3)
-        ecosystemModel.addNewFactor(named: "Phytoplankton", ofType: .Producer, withLevel: 2)
-        ecosystemModel.addNewFactor(named: "Fish", ofType: .Consumer, withLevel: 4)
-        ecosystemModel.addNewFactor(named: "Penguin", ofType: .Consumer, withLevel: 1)
-        ecosystemModel.addNewFactor(named: "Orca", ofType: .Consumer, withLevel: 1)
-        ecosystemModel.addNewFactor(named: "Leopard Seal", ofType: .Consumer, withLevel: 1)
-        ecosystemModel.addNewFactor(named: "Baleen Whale", ofType: .Consumer, withLevel: 0.5)
+        ecosystemModel = Ecosystem(name: "Tundra")
+        ecosystemModel.addNewFactor(named: "Arctic Wildflower", ofType: .Producer, withLevel: 3)
+        ecosystemModel.addNewFactor(named: "Arctic Hare", ofType: .Consumer, withLevel: 3)
+        ecosystemModel.addNewFactor(named: "Grey Wolf", ofType: .Consumer, withLevel: 3)
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.  Also, get the SKScene from the loaded GKScene

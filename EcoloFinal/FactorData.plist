@@ -9,6 +9,13 @@
 	</dict>
 	<key>Producer</key>
 	<dict>
+		<key>Arctic Wildflower</key>
+		<dict>
+			<key>Arctic Wildflower</key>
+			<string>3.0</string>
+			<key>Arctic Hare</key>
+			<string>-0.5</string>
+		</dict>
 		<key>Phytoplankton</key>
 		<dict>
 			<key>Sunlight</key>
@@ -23,6 +30,22 @@
 	</dict>
 	<key>Consumer</key>
 	<dict>
+		<key>Arctic Hare</key>
+		<dict>
+			<key>Arctic Hare</key>
+			<string>-1.0</string>
+			<key>Grey Wolf</key>
+			<string>-0.5</string>
+			<key>Arctic Wildflower</key>
+			<string>1.5</string>
+		</dict>
+		<key>Grey Wolf</key>
+		<dict>
+			<key>Grey Wolf</key>
+			<string>-0.5</string>
+			<key>Arctic Hare</key>
+			<string>0.2</string>
+		</dict>
 		<key>Fish</key>
 		<dict>
 			<key>Penguin</key>
