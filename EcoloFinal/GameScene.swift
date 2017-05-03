@@ -10,7 +10,7 @@ import SpriteKit
 import GameplayKit
 
 protocol EcosystemScene {
-    init(delegate: EcosystemSceneDelegate)
+    //init(delegate: EcosystemSceneDelegate)
     func render(factors: [Factor: [Factor: Double]])
     @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool
     func evolveEcosystem()
@@ -26,14 +26,14 @@ extension Array {
 class GameScene: SKScene, EcosystemScene {
     
     // NEW MVC STUFF:
-    required init(delegate: EcosystemSceneDelegate) {
+    /*required init(delegate: EcosystemSceneDelegate) {
         super.init()
         self.delegate = delegate
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+        super.init(coder: aDecoder)
+    }*/
     
     @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool {
         return (delegate as! EcosystemSceneDelegate).introduceFactor(named: name, ofType: type, withLevel: level)
@@ -53,6 +53,7 @@ class GameScene: SKScene, EcosystemScene {
             
             // Determine how many sprites we need to add or subtract from each factor's population:
             let deltaFactors = desiredNumberOfSprites(factor: factor) - organismNodes[factor]!.count
+            print("\(organismNodes[factor]!.count) \(factor.name)s detected. \(desiredNumberOfSprites(factor: factor)) desired.  Adding \(deltaFactors).")
             
             // First scenario: we don't need to add or subtract anything, in which case we do nothing!
             
@@ -61,10 +62,11 @@ class GameScene: SKScene, EcosystemScene {
             if deltaFactors > 1 {
                 for _ in 1 ... deltaFactors {
                     addOrganismNode(factor: factor)
+                    print("\(factor.name) added")
                 }
                 
                 // Third scenario: the population has shrunk in size, so we use killOrganismNode an appropriate number of times.
-            } else if deltaFactors < 1 {
+            } else if deltaFactors < -1 {
                 for _ in deltaFactors ... -1 {
                     killOrganismNode(factor: factor, relationships: factors[factor]!)
                 }
@@ -139,7 +141,7 @@ class GameScene: SKScene, EcosystemScene {
         newOrganismNode.xScale = 0.2
         newOrganismNode.yScale = 0.2
         newOrganismNode.zPosition = 3
-        organismNodes[factor] = [newOrganismNode]
+        organismNodes[factor]!.insert(newOrganismNode)
         organismNodeDirections[newOrganismNode] = -1
         self.addChild(newOrganismNode)
         newOrganismNode.introduce()
@@ -147,7 +149,7 @@ class GameScene: SKScene, EcosystemScene {
     }
     
     @discardableResult func removeOrganismNode(node: SKOrganismNode) -> Bool {
-        return (organismNodes[node.factor]?.remove(node) != nil) ? true : false
+        return (organismNodes[node.factor]!.remove(node) != nil) ? true : false
     }
     
     //
@@ -159,7 +161,7 @@ class GameScene: SKScene, EcosystemScene {
             let location = touch.location(in: self)
             guard let mountain = childNode(withName: "MountainNode"), let mountainButton = childNode(withName: "MountainButtonNode"),
                 let addGreyWolfButton = childNode(withName: "AddGreyWolfButtonNode"), let deleteGreyWolfButton = childNode(withName: "DeleteGreyWolfButtonNode"),
-                let addArcticHareButton = childNode(withName: "AddArcticHareButtonNode"), let deleteRabbitButton = childNode(withName: "DeleteArcticHareButtonNode") else {
+                let addArcticHareButton = childNode(withName: "AddArcticHareButtonNode"), let deleteArcticHareButton = childNode(withName: "DeleteArcticHareButtonNode"), let addArcticWildflowerButton = childNode(withName: "AddArcticWildflowerButton"), let deleteArcticWildflowerButton = childNode(withName: "DeleteArcticWildflowerButton"), let playButton = childNode(withName: "PlayButton") else {
                 break
             }
             
@@ -172,23 +174,52 @@ class GameScene: SKScene, EcosystemScene {
                     mountain.run(animate!)
                 }
                 
-            } /*else if addWolfButton.contains(location) {
-                addOrganism(organismName: "wolf")
+            } else if playButton.contains(location) {
+                evolveEcosystem()
+                print("Current Sprite Statuses:")
+                for (_, nodes) in organismNodes {
+                    for node in nodes {
+                        print("\(node.factor.name): \(node.spriteStatus)")
+                    }
+                }
                 
-            } else if deleteWolfButton.contains(location) {
-                deleteOrganism(organismName: "wolf")
+            }else if addGreyWolfButton.contains(location) {
+                addOrganismFromName("Grey Wolf")
+                
+            } else if deleteGreyWolfButton.contains(location) {
+                deleteOrganismFromName("Grey Wolf")
             
-            } else if addRabbitButton.contains(location) {
-                addOrganism(organismName: "rabbit")
+            } else if addArcticHareButton.contains(location) {
+                addOrganismFromName("Arctic Hare")
                 
-            } else if deleteRabbitButton.contains(location) {
-                deleteOrganism(organismName: "rabbit")
+            } else if deleteArcticHareButton.contains(location) {
+                deleteOrganismFromName("Arctic Hare")
+                
+            } else if addArcticWildflowerButton.contains(location) {
+                addOrganismFromName("Arctic Wildflower")
+                
+            } else if deleteArcticWildflowerButton.contains(location) {
+                deleteOrganismFromName("Arctic Wildflower")
             }
-                
-            else {predatorPreyInteraction(predatorName: "wolf", preyName: "rabbit")}*/
             
         }
         
+    }
+    
+    func addOrganismFromName(_ name: String) {
+        for (factor, _) in organismNodes {
+            if factor.name == name {
+                addOrganismNode(factor: factor)
+            }
+        }
+    }
+    
+    func deleteOrganismFromName(_ name: String) {
+        for (factor, _) in organismNodes {
+            if factor.name == name {
+                killOrganismNode(factor: factor, relationships: (delegate as! EcosystemViewController).ecosystemModel.getFactorsWithInteractions()[factor]!)
+            }
+        }
     }
     
 }

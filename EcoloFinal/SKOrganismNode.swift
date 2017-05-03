@@ -133,7 +133,7 @@ class SKOrganismNode: SKSpriteNode {
         let destination = randomPointOnGround()
         faceRightDirection(destination: destination)
         
-        self.run(SKAction.move(to: destination, duration: 3))
+        self.run(SKAction.move(to: destination, duration: 3), completion: {self.spriteStatus = .Standby})
         
     }
     
@@ -165,7 +165,10 @@ class SKOrganismNode: SKSpriteNode {
     let disintegrate = SKAction.fadeOut(withDuration: 1)
     let delete = SKAction.removeFromParent() //How to completely delete the SKOrganismNode object?
     
+    
     func die() {
+        
+        let erase = SKAction.run({(self.scene as! GameScene).removeOrganismNode(node: self)})
         
         switch spriteStatus {
             
@@ -173,7 +176,7 @@ class SKOrganismNode: SKSpriteNode {
             spriteStatus = .Dying
             
             self.removeAllActions()
-            self.run(SKAction.sequence([disintegrate, delete]))
+            self.run(SKAction.sequence([disintegrate, erase, delete]))
             
         /*case .Introducing:
             spriteStatus = .Dying
@@ -189,17 +192,17 @@ class SKOrganismNode: SKSpriteNode {
             spriteStatus = .Dying
             target!.die()
             self.removeAllActions()
-            self.run(SKAction.sequence([disintegrate, delete]))
+            self.run(SKAction.sequence([disintegrate, erase, delete]))
             
         case .MarkedForDeath:
             spriteStatus = .Dying
             self.removeAllActions()
-            self.run(SKAction.sequence([disintegrate, delete]))
+            self.run(SKAction.sequence([disintegrate, erase, delete]))
             
         case .Killed:
             spriteStatus = .Dying
             self.removeAllActions()
-            self.run(SKAction.sequence([killedAnimation, disintegrate, delete]))
+            self.run(SKAction.sequence([killedAnimation, disintegrate, erase, delete]))
             
         case .Dying: break
         }

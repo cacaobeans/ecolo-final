@@ -44,6 +44,7 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         if let scene = GKScene(fileNamed: "GameScene"), let sceneNode = scene.rootNode as! GameScene? {
             
             // Because gameScene and sceneNode are reference types, they refer to the same object. This is intentional.
+            sceneNode.delegate = self
             gameScene = sceneNode
             
             // Copy gameplay related content over to the scene
