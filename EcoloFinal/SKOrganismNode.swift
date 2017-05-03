@@ -146,9 +146,9 @@ class SKOrganismNode: SKSpriteNode {
             self.removeAllActions()
             
         case .Hunting:
-            spriteStatus = .MarkedForDeath
-            target!.die()
             self.removeAllActions()
+            spriteStatus = .MarkedForDeath
+            target?.die()
             
         //case .Introducing: die()
             
@@ -190,7 +190,7 @@ class SKOrganismNode: SKSpriteNode {
             
         case .Hunting:
             spriteStatus = .Dying
-            target!.die()
+            target?.die()
             self.removeAllActions()
             self.run(SKAction.sequence([disintegrate, erase, delete]))
             
@@ -220,10 +220,10 @@ class SKOrganismNode: SKSpriteNode {
     
     
     func hunt(prey: SKOrganismNode) {
-        
+        print("TARGET REQUESTED \(factor.name) \(self.hashValue) targeting \(prey.factor.name) \(prey.hashValue)")
         spriteStatus = .Hunting
-        
         target = prey
+        print("TARGET ACQUIRED \(factor.name) \(self.hashValue) targeting \(target?.factor.name) \(target?.hashValue)")
         let targetPosition = prey.position
         
         faceRightDirection(destination: targetPosition)

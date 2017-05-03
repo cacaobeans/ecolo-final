@@ -18,7 +18,7 @@ class Factor: CustomStringConvertible, Hashable {
     
     // Factor-specific data required for rendering the correct number of sprites on screen.
     // Eventually, these will be set by the initializer from data stored in the plist file.
-    let standardPopulationSize = 5
+    let standardPopulationSize = 1
     let populationRenderCurveLogBase: Double = 2.0
     
     // Standard identification data and functions:

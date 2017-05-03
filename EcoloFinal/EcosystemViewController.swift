@@ -37,7 +37,7 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         ecosystemModel = Ecosystem(name: "Tundra")
         ecosystemModel.addNewFactor(named: "Arctic Wildflower", ofType: .Producer, withLevel: 3)
         ecosystemModel.addNewFactor(named: "Arctic Hare", ofType: .Consumer, withLevel: 3)
-        ecosystemModel.addNewFactor(named: "Grey Wolf", ofType: .Consumer, withLevel: 3)
+        ecosystemModel.addNewFactor(named: "Grey Wolf", ofType: .Consumer, withLevel: 1)
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.  Also, get the SKScene from the loaded GKScene

@@ -53,7 +53,7 @@ class GameScene: SKScene, EcosystemScene {
             
             // Determine how many sprites we need to add or subtract from each factor's population:
             let deltaFactors = desiredNumberOfSprites(factor: factor) - organismNodes[factor]!.count
-            print("\(organismNodes[factor]!.count) \(factor.name)s detected. \(desiredNumberOfSprites(factor: factor)) desired.  Adding \(deltaFactors).")
+            //print("\(organismNodes[factor]!.count) \(factor.name)s detected. \(desiredNumberOfSprites(factor: factor)) desired.  Adding \(deltaFactors).")
             
             // First scenario: we don't need to add or subtract anything, in which case we do nothing!
             
@@ -62,7 +62,7 @@ class GameScene: SKScene, EcosystemScene {
             if deltaFactors > 1 {
                 for _ in 1 ... deltaFactors {
                     addOrganismNode(factor: factor)
-                    print("\(factor.name) added")
+                    //print("\(factor.name) added")
                 }
                 
                 // Third scenario: the population has shrunk in size, so we use killOrganismNode an appropriate number of times.
@@ -165,6 +165,12 @@ class GameScene: SKScene, EcosystemScene {
                 break
             }
             
+            for (_, nodes) in organismNodes {
+                for node in nodes {
+                    print("\(node.factor.name) \(node.hashValue): \(node.spriteStatus) \(node.target)")
+                }
+            }
+            
             if mountainButton.contains(location) {
                 if mountain.alpha == 0 {
                     let animate = SKAction(named: "fadeInMountain")
@@ -177,11 +183,6 @@ class GameScene: SKScene, EcosystemScene {
             } else if playButton.contains(location) {
                 evolveEcosystem()
                 print("Current Sprite Statuses:")
-                for (_, nodes) in organismNodes {
-                    for node in nodes {
-                        print("\(node.factor.name): \(node.spriteStatus)")
-                    }
-                }
                 
             }else if addGreyWolfButton.contains(location) {
                 addOrganismFromName("Grey Wolf")
