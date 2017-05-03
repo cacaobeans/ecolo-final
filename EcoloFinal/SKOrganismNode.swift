@@ -231,9 +231,9 @@ class SKOrganismNode: SKSpriteNode {
         self.removeAllActions()
         self.run(SKAction.sequence([markPrey, attack, kill, removeTarget]))
         
-        
-        
     }
+    
+    //Comment comment comment
     
     
 }
