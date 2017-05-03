@@ -43,22 +43,6 @@ class GameScene: SKScene, EcosystemScene {
     
     // Randomization helper functions:
     
-    func random() -> CGFloat {
-        return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
-    }
-    
-    func random(min: CGFloat, max: CGFloat) -> CGFloat {
-        return random() * (max - min) + min
-    }
-    
-    func randomInt (min: Int , max: Int) -> Int {
-        return min + Int(arc4random_uniform(UInt32(max - min + 1)))
-    }
-    
-    func randomPointOnGround() -> CGPoint {
-        return CGPoint(x: random(min: frame.size.width * -1 / 2 + 50, max: frame.size.width / 2 - 50), y: random(min: frame.size.height * -1 / 2 + 50, max: frame.size.height * -3 / 10))
-    }
-    
     /*
      THINGS TO DO
      -support different types of organisms

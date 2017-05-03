@@ -14,7 +14,8 @@ enum SpriteStatus {
     case MarkedForDeath
     case Hunting
     case Standby
-    case Promenading
+    case Introducing
+    case Killed //Added new case to distinguish handling for death between .MarkedForDeath SKOrganismNode that gets killed by predator vs. one that is told to die before it can get killed by predator
 }
 
 class SKOrganismNode {
@@ -25,7 +26,7 @@ class SKOrganismNode {
     var action: SKAction?
     let scene: SKScene
     var spriteStatus: SpriteStatus
-    
+    var target: SKOrganismNode?
     
     func random() -> CGFloat {
         return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
@@ -44,12 +45,9 @@ class SKOrganismNode {
     }
 
     
-    init?(factor: Factor, scene: SKScene) {
-        
-        guard let s = SKSpriteNode(imageNamed: factor.name) else {
-            return nil
-        }
-        self.sprite = s
+    init(factor: Factor, scene: SKScene) {
+
+        self.sprite = SKSpriteNode(imageNamed: factor.name)
         
         self.factor = factor
         
@@ -87,28 +85,30 @@ class SKOrganismNode {
     
     func standby() {
         
+        spriteStatus = .Standby
+        
         action = SKAction.repeatForever(goToRandomPoint())
+        sprite.removeAllActions()
         
         sprite.run(action!)
     
     }
     
     
+    //When sprite animations begin becoming a thing, we can use SKAction.group to move and animate sprite at the same time (SKAction.group, SKAction.sequence, SKAction.repeating are all very cool)
 
     //helps manage movement stuff (sets action, switches direction)
 
     func faceRightDirection(destination: CGPoint) {
         
         if sprite.position.x < destination.x {
-            if direction == 1 {
-            } else {
+            if direction != 1 {
                 direction = 1
                 sprite.xScale = sprite.xScale * -1
             }
             
         } else if sprite.position.x > destination.x {
-            if direction == -1 {
-            } else {
+            if direction != -1 {
                 direction = -1
                 sprite.xScale = sprite.xScale * -1
             }
@@ -117,7 +117,10 @@ class SKOrganismNode {
     }
     
     //How can we link the scene to the sprites within the NSOrganismSprite class?
-    func promenade() {
+    func introduce() {
+        
+        spriteStatus = .Introducing
+        
         let randomSide = Int(arc4random_uniform(2))
         if randomSide > 1 {
             sprite.position = CGPoint(x: scene.size.width/2 + 100, y: scene.size.height/2 * -1 + 50)
@@ -130,6 +133,7 @@ class SKOrganismNode {
         
         let destination = randomPointOnGround()
         faceRightDirection(destination: destination)
+        
         action = SKAction.move(to: destination, duration: 3)
         
         sprite.run(action!)
@@ -137,33 +141,115 @@ class SKOrganismNode {
     }
     
     func markForDeath() {
-        action = nil
-        sprite.removeAllActions()
+        
+        switch spriteStatus {
+        
+        case .Standby:
+            spriteStatus = .MarkedForDeath
+            action = nil
+            
+            sprite.removeAllActions()
+            
+        case .Hunting:
+            spriteStatus = .MarkedForDeath
+            target!.die()
+            action = nil
+            
+            sprite.removeAllActions()
+        
+        case .Introducing: die()
+        
+        case .Dying: break
+            
+        case .Killed: break
+            
+        case .MarkedForDeath: break
+        
+        }
     }
     
+    let killedAnimation = SKAction.colorize(with: .red, colorBlendFactor: 1, duration: 0.25)
+    let disintegrate = SKAction.fadeOut(withDuration: 1)
+    let delete = SKAction.removeFromParent() //How to completely delete the SKOrganismNode object?
     
     func die() {
         
-        let disintegrate = SKAction.fadeOut(withDuration: 1)
-        let delete = SKAction.removeFromParent()
-        
-        action = SKAction.sequence([disintegrate, delete])
-        
-        sprite.run(action!)
+        switch spriteStatus {
+            
+        case .Standby:
+            spriteStatus = .Dying
+            action = SKAction.sequence([disintegrate, delete])
+            
+            sprite.removeAllActions()
+            sprite.run(action!)
+            
+            
+        case .Introducing:
+            spriteStatus = .Dying
+            let exit = action!.reversed()
+            direction *= -1
+            sprite.xScale = sprite.xScale * -1
+            action = SKAction.sequence([exit, delete])
+            
+            sprite.removeAllActions()
+            sprite.run(action!)
+            
+        case .Hunting:
+            spriteStatus = .Dying
+            target!.die()
+            action = SKAction.sequence([disintegrate, delete])
+            
+            sprite.removeAllActions()
+            sprite.run(action!)
+            
+        case .MarkedForDeath:
+            spriteStatus = .Dying
+            action = SKAction.sequence([disintegrate, delete])
+            
+            sprite.removeAllActions()
+            sprite.run(action!)
+            
+        case .Killed:
+            spriteStatus = .Dying
+            action = SKAction.sequence([killedAnimation, disintegrate, delete])
+            
+            sprite.removeAllActions()
+            sprite.run(action!)
+            
+        case .Dying: break
+        }
         
     }
     
-    func hunt(target: SKOrganismNode) {
+    func getKilled() {
+        if spriteStatus == .MarkedForDeath {
+            spriteStatus = .Killed
+            die()
+        } else {
+            print("cannot kill SKOrganism node that isn't marked for death")
+        }
+    }
+    
+    
+    func hunt(prey: SKOrganismNode) {
         
-        let targetPosition = target.sprite.position
+        spriteStatus = .Hunting
+        
+        target = prey
+        let targetPosition = prey.sprite.position
         
         faceRightDirection(destination: targetPosition)
+        let markPrey = SKAction.run({prey.markForDeath()})
         let attack = SKAction.move(to: targetPosition, duration: 3)
-        let kill = SKAction.run({target.die()})
+        let kill = SKAction.run({prey.getKilled()})
+        let removeTarget = SKAction.run({self.target = nil})
         
-        action = SKAction.sequence([attack, kill])
+        action = SKAction.sequence([markPrey, attack, kill, removeTarget])
+        sprite.removeAllActions()
         
         sprite.run(action!)
+        
+        
         
     }
     
