@@ -232,7 +232,7 @@ class SKOrganismNode: SKSpriteNode {
         let kill = SKAction.run({prey.getKilled()})
         let removeTarget = SKAction.run({self.target = nil})
         self.removeAllActions()
-        self.run(SKAction.sequence([markPrey, attack, kill, removeTarget]))
+        self.run(SKAction.sequence([markPrey, attack, kill, removeTarget]), completion: {self.spriteStatus = .Standby})
         
     }
     
