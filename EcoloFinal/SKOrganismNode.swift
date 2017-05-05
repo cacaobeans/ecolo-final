@@ -66,7 +66,7 @@ class SKOrganismNode: SKSpriteNode {
         return hypotf(Float(p1.x - p2.x), Float(p1.y - p2.y))
     }
     
-    func goToRandomPoint() -> SKAction {
+    func wander() {
         
         var destination: CGPoint
         
@@ -74,14 +74,19 @@ class SKOrganismNode: SKSpriteNode {
             
         let distance = shortestDistanceBetweenPoints(self.position, pointToGo)
         
-        if distance < 150 {
+        if distance < 300 {
             destination = self.position
         } else {
             destination = pointToGo
         }
         self.zPosition = destination.y * -1 / 100
         
-        return SKAction.move(to: destination, duration: TimeInterval(random(min: 2, max: 4)))
+        faceRightDirection(destination: pointToGo)
+        
+        let moveAction = SKAction.move(to: pointToGo, duration: TimeInterval(random(min: 2, max: 4)))
+        let delayAction = SKAction.wait(forDuration: TimeInterval(randomInt(min: 1, max: 5)))
+        
+        self.run(SKAction.sequence([moveAction, delayAction])) {self.wander()}
     }
     
     func standby() {
@@ -90,7 +95,7 @@ class SKOrganismNode: SKSpriteNode {
         
         self.removeAllActions()
         
-        self.run(SKAction.repeatForever(goToRandomPoint()))
+        self.wander()
     }
     
     
@@ -121,7 +126,7 @@ class SKOrganismNode: SKSpriteNode {
         spriteStatus = .Introducing
         
         let randomSide = Int(arc4random_uniform(2))
-        if randomSide > 1 {
+        if randomSide > 0 {
             self.position = CGPoint(x: scene!.size.width/2 + 100, y: scene!.size.height/2 * -1 + 50)
             direction = -1
         } else {
@@ -133,7 +138,7 @@ class SKOrganismNode: SKSpriteNode {
         let destination = randomPointOnGround()
         faceRightDirection(destination: destination)
         
-        self.run(SKAction.move(to: destination, duration: 3), completion: {self.spriteStatus = .Standby})
+        self.run(SKAction.move(to: destination, duration: 3), completion: {self.standby()})
         
     }
     
@@ -232,7 +237,7 @@ class SKOrganismNode: SKSpriteNode {
         let kill = SKAction.run({prey.getKilled()})
         let removeTarget = SKAction.run({self.target = nil})
         self.removeAllActions()
-        self.run(SKAction.sequence([markPrey, attack, kill, removeTarget]), completion: {self.spriteStatus = .Standby})
+        self.run(SKAction.sequence([markPrey, attack, kill, removeTarget]), completion: {self.standby()})
         
     }
     

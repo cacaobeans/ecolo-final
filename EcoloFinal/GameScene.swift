@@ -79,7 +79,7 @@ class GameScene: SKScene, EcosystemScene {
         let availablePreyNodes = organismNodes[factor]!.filter({$0.spriteStatus == .Standby || $0.spriteStatus == .Introducing})
         let huntingPreyNodes = organismNodes[factor]!.filter({$0.spriteStatus == .Hunting})
         var availablePredatorNodes = [SKOrganismNode]()
-        let predators = relationships.filter({$0.value < 0}).map({$0.key})
+        let predators = relationships.filter({$0.value < 0 && $0.key != factor}).map({$0.key})
         for predator in predators {
             if let predatorNodes = organismNodes[predator] {
                 availablePredatorNodes.append(contentsOf: predatorNodes.filter({$0.spriteStatus == .Standby || $0.spriteStatus == .Introducing}))
