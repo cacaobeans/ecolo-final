@@ -11,7 +11,7 @@ import SpriteKit
 import GameplayKit
 
 protocol EcosystemSceneDelegate: SKSceneDelegate {
-    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool
+    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool
     func evolveEcosystem()
 }
 
@@ -21,8 +21,8 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
     var gameScene: EcosystemScene!
     
     
-    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool {
-        return ecosystemModel.addNewFactor(named: name, ofType: type, withLevel: level)
+    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool {
+        return ecosystemModel.addNewFactor(named: name, ofType: type, ofMovementType: movement, withLevel: level)
     }
     
     func evolveEcosystem() {
@@ -35,9 +35,12 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         super.viewDidLoad()
         
         ecosystemModel = Ecosystem(name: "Tundra")
-        ecosystemModel.addNewFactor(named: "Arctic Wildflower", ofType: .Producer, withLevel: 3)
-        ecosystemModel.addNewFactor(named: "Arctic Hare", ofType: .Consumer, withLevel: 3)
-        ecosystemModel.addNewFactor(named: "Grey Wolf", ofType: .Consumer, withLevel: 1)
+        ecosystemModel.addNewFactor(named: "Arctic Wildflower", ofType: .Producer, ofMovementType: .Static, withLevel: 3)
+        ecosystemModel.addNewFactor(named: "Arctic Hare", ofType: .Consumer, ofMovementType: .Terrestrial, withLevel: 3)
+        ecosystemModel.addNewFactor(named: "Grey Wolf", ofType: .Consumer, ofMovementType: .Terrestrial, withLevel: 1)
+        ecosystemModel.addNewFactor(named: "Penguin", ofType: .Consumer, ofMovementType: .Aerial, withLevel: 3) //These aren't actually penguins, proof of concept for aerial movement
+        
+        //ecosystemModel.addNewFactor(named: "Sun", ofType: .Resource, withLevel: 3)
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.  Also, get the SKScene from the loaded GKScene

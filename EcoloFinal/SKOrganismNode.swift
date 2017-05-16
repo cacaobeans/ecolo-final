@@ -40,10 +40,28 @@ class SKOrganismNode: SKSpriteNode {
         return min + Int(arc4random_uniform(UInt32(max - min + 1)))
     }
     
-    func randomPointOnGround() -> CGPoint {
-        return CGPoint(x: random(min: scene!.size.width * -1 / 2 + 50, max: scene!.size.width / 2 - 50), y: random(min: scene!.size.height * -1 / 2 + 50, max: scene!.size.height * -3 / 10))
+    func randomPoint(inDomain name: String) -> CGPoint? {
+        guard let domain = scene!.childNode(withName: name) else {
+            return nil
+        }
+        return CGPoint(x: random(min: domain.position.x - domain.frame.size.width/2, max: domain.position.x + domain.frame.size.width/2), y: random(min: domain.position.y - domain.frame.size.height/2, max: domain.position.y + domain.frame.size.height/2))
     }
     
+    /*
+    func randomPointOnGround() -> CGPoint? {
+        guard let ground = scene!.childNode(withName: "Ground") else {
+            return nil
+        }
+        return CGPoint(x: random(min: ground.position.x - ground.frame.size.width/2, max: ground.position.x + ground.frame.size.width/2), y: random(min: ground.position.y - ground.frame.size.height/2, max: ground.position.y + ground.frame.size.height/2))
+    }
+    
+    func randomPointOnSky() -> CGPoint? {
+        guard let sky = scene!.childNode(withName: "Sky") else {
+            return nil
+        }
+        return CGPoint(x: random(min: sky.position.x - sky.frame.size.width/2, max: sky.position.x + sky.frame.size.width/2), y: random(min: sky.position.y - sky.frame.size.height/2, max: sky.position.y + sky.frame.size.height/2))
+    }
+    */
     
     required init(factor: Factor) {
         self.factor = factor
@@ -70,32 +88,48 @@ class SKOrganismNode: SKSpriteNode {
         
         var destination: CGPoint
         
-        let pointToGo = randomPointOnGround()
+        switch factor.movement {
+        
+        case .Aerial:
+            let destination = randomPoint(inDomain: "Sky")
+        
+            faceRightDirection(destination: destination!)
             
-        let distance = shortestDistanceBetweenPoints(self.position, pointToGo)
+            let moveAction = SKAction.move(to: destination!, duration: TimeInterval(random(min: 2, max: 4)))
+            
+            self.run(SKAction.sequence([moveAction])) {self.wander()}
         
-        if distance < 300 {
-            destination = self.position
-        } else {
-            destination = pointToGo
+        case .Terrestrial:
+            let pointToGo = randomPoint(inDomain: "Ground")
+            let distance = shortestDistanceBetweenPoints(self.position, pointToGo!)
+            
+            if distance < 300 {
+                destination = self.position
+            } else {
+                destination = pointToGo!
+            }
+            
+            self.zPosition = destination.y * -1 / 100
+            faceRightDirection(destination: destination)
+            
+            let moveAction = SKAction.move(to: destination, duration: TimeInterval(random(min: 2, max: 4)))
+            let delayAction = SKAction.wait(forDuration: TimeInterval(randomInt(min: 1, max: 5)))
+            
+            self.run(SKAction.sequence([moveAction, delayAction])) {self.wander()}
+        
+        case .Static:
+            break
+        
         }
-        self.zPosition = destination.y * -1 / 100
         
-        faceRightDirection(destination: pointToGo)
-        
-        let moveAction = SKAction.move(to: pointToGo, duration: TimeInterval(random(min: 2, max: 4)))
-        let delayAction = SKAction.wait(forDuration: TimeInterval(randomInt(min: 1, max: 5)))
-        
-        self.run(SKAction.sequence([moveAction, delayAction])) {self.wander()}
     }
     
     func standby() {
         
         spriteStatus = .Standby
-        
         self.removeAllActions()
-        
         self.wander()
+        
     }
     
     
@@ -125,21 +159,46 @@ class SKOrganismNode: SKSpriteNode {
         
         spriteStatus = .Introducing
         
+        switch factor.movement {
+        case .Aerial:
+            self.position = randomPoint(inDomain: "Sky")!
+        case .Terrestrial:
+            self.position = randomPoint(inDomain: "Ground")!
+        case .Static:
+            self.position = randomPoint(inDomain: "Ground")!
+        }
+        
         let randomSide = Int(arc4random_uniform(2))
         if randomSide > 0 {
-            self.position = CGPoint(x: scene!.size.width/2 + 100, y: scene!.size.height/2 * -1 + 50)
+            self.position.x = scene!.size.width/2 + 100
             direction = -1
+            
         } else {
-            self.position = CGPoint(x: scene!.size.width/2 * -1 - 100, y: scene!.size.height/2 * -1 + 50)
+            self.position.x = scene!.size.width/2 * -1 - 100
             direction = 1
             self.xScale = self.xScale * -1
         }
         
-        let destination = randomPointOnGround()
+        var destination: CGPoint
+        
+        switch factor.movement {
+        case .Aerial:
+            destination = randomPoint(inDomain: "Sky")!
+        case .Terrestrial:
+            destination = randomPoint(inDomain: "Ground")!
+        case .Static:
+            destination = randomPoint(inDomain: "Ground")!
+        }
+        
         faceRightDirection(destination: destination)
         
-        self.run(SKAction.move(to: destination, duration: 3), completion: {self.standby()})
-        
+        if factor.movement != .Static {
+            self.run(SKAction.move(to: destination, duration: 3), completion: {self.standby()})
+        } else {
+            self.alpha = 0.0
+            self.position = destination
+            self.run(SKAction.fadeIn(withDuration: 1), completion: {self.standby()})
+        }
     }
     
     func markForDeath() {

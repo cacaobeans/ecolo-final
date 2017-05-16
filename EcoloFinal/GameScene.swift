@@ -12,7 +12,7 @@ import GameplayKit
 protocol EcosystemScene {
     //init(delegate: EcosystemSceneDelegate)
     func render(factors: [Factor: [Factor: Double]])
-    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool
+    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool
     func evolveEcosystem()
 }
 
@@ -35,8 +35,8 @@ class GameScene: SKScene, EcosystemScene {
         super.init(coder: aDecoder)
     }*/
     
-    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool {
-        return (delegate as! EcosystemSceneDelegate).introduceFactor(named: name, ofType: type, withLevel: level)
+    @discardableResult func introduceFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool {
+        return (delegate as! EcosystemSceneDelegate).introduceFactor(named: name, ofType: type, ofMovementType: movement, withLevel: level)
     }
     
     func evolveEcosystem() {
@@ -45,6 +45,7 @@ class GameScene: SKScene, EcosystemScene {
     
     func render(factors: [Factor: [Factor: Double]]) {
         for (factor, _) in factors {
+            
             
             // If we haven't yet tried to render this factor, that means it's new and its framework needs to be introduced to the GameScene:
             if organismNodes[factor] == nil {
@@ -115,14 +116,7 @@ class GameScene: SKScene, EcosystemScene {
     
     /*
      THINGS TO DO
-     -support different types of organisms
-        -need 1)array to store sprites 2)array to store direction facing
-            -possibly could do an organism array of sprite arrays?
-        -how to determine which organism corresponds to which sprite?
-            -index in the array to correspond to a specific organism in the ecosystem?
-            -perhaps the "name" variable for a factor could be used to call a specific sprite?
-     -mobile vs immobile organisms
-        -Something else that can be passed? (in general, if its a producer, it will be immobile, so the direction facing array will be irrelevant)
+     
      */
     
     //dictionary storing all organism sprites
@@ -182,6 +176,7 @@ class GameScene: SKScene, EcosystemScene {
                 
             } else if playButton.contains(location) {
                 evolveEcosystem()
+                //self.isPaused = false
                 print("Current Sprite Statuses:")
                 
             }else if addGreyWolfButton.contains(location) {
@@ -201,6 +196,8 @@ class GameScene: SKScene, EcosystemScene {
                 
             } else if deleteArcticWildflowerButton.contains(location) {
                 deleteOrganismFromName("Arctic Wildflower")
+            } else {
+                addOrganismFromName("Penguin") //Proof of concept for aerial movement
             }
             
         }
@@ -222,6 +219,12 @@ class GameScene: SKScene, EcosystemScene {
             }
         }
     }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //self.isPaused = true
+    }
+    
+    
     
 }
 

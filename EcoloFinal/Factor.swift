@@ -1,5 +1,5 @@
 //
-//  SavannaAbioticElement.swift
+//  Factor.swift
 //  Ecolo Model Testing
 //
 //  Created by Jonathan J. Lee on 2/28/17.
@@ -12,6 +12,12 @@ enum FactorType: String {
     case Producer
     case Consumer
     case Resource
+}
+
+enum MovementType: String {
+    case Aerial
+    case Terrestrial
+    case Static
 }
 
 class Factor: CustomStringConvertible, Hashable {
@@ -32,14 +38,16 @@ class Factor: CustomStringConvertible, Hashable {
     var level: Double
     let delegate: FactorDelegate
     let type: FactorType
+    let movement: MovementType
     
     // Helper properties:
     private var delta = 0.0
     
     // Initializer:
-    init(_ name: String, type: FactorType, level: Double, delegate: FactorDelegate) {
+    init(_ name: String, type: FactorType, movement: MovementType, level: Double, delegate: FactorDelegate) {
         self.name = name
         self.type = type
+        self.movement = movement
         self.level = level
         self.delegate = delegate
         hashValue = Factor.nextHashValue

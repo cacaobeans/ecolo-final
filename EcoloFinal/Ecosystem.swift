@@ -39,7 +39,7 @@ class Ecosystem: CustomStringConvertible, FactorDelegate {
         self.factorData = data
     }
     
-    @discardableResult func addNewFactor(named name: String, ofType type: FactorType, withLevel level: Double) -> Bool {
+    @discardableResult func addNewFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool {
         
         // Step 1: Retrieve the [String: String] dictionary of the new factor's Possible Interactions with all possible organisms, even those that aren't in this ecosystem.
         // If we couldn't retrieve the PI, then that means that we don't have any data for the new factor and there's an error.
@@ -50,7 +50,7 @@ class Ecosystem: CustomStringConvertible, FactorDelegate {
         
         // Step 2: Add the new factor to the main storage array with an empty interaction coefficient dictionary (ICD).
         // We'll fill the ICD in Step 3.
-        let newFactor = Factor(name, type: type, level: level, delegate: self)
+        let newFactor = Factor(name, type: type, movement: movement, level: level, delegate: self)
         factors[newFactor] = [Factor: Double]() // This dictionary is the ICD.
         
         
