@@ -13,7 +13,6 @@ protocol EcosystemScene {
     //init(delegate: EcosystemSceneDelegate)
     func render(factors: [Factor: [Factor: Double]])
     @discardableResult func introduceFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool
-    func evolveEcosystem()
 }
 
 extension Array {
@@ -38,6 +37,7 @@ class GameScene: SKScene, EcosystemScene {
     @discardableResult func introduceFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool {
         return (delegate as! EcosystemSceneDelegate).introduceFactor(named: name, ofType: type, ofMovementType: movement, withLevel: level)
     }
+
     
     func evolveEcosystem() {
         (delegate as! EcosystemSceneDelegate).evolveEcosystem()
@@ -46,7 +46,7 @@ class GameScene: SKScene, EcosystemScene {
     func render(factors: [Factor: [Factor: Double]]) {
         for (factor, _) in factors {
             
-            
+            if factor.type != .Resource {
             // If we haven't yet tried to render this factor, that means it's new and its framework needs to be introduced to the GameScene:
             if organismNodes[factor] == nil {
                 organismNodes[factor] = []
@@ -71,6 +71,7 @@ class GameScene: SKScene, EcosystemScene {
                 for _ in deltaFactors ... -1 {
                     killOrganismNode(factor: factor, relationships: factors[factor]!)
                 }
+            }
             }
         }
     }
@@ -112,10 +113,9 @@ class GameScene: SKScene, EcosystemScene {
         return factor.standardPopulationSize * Int(ceil(log(factor.level + 1) / log(factor.populationRenderCurveLogBase)))
     }
     
-    // Randomization helper functions:
-    
     /*
      THINGS TO DO
+     
      
      */
     
@@ -153,9 +153,13 @@ class GameScene: SKScene, EcosystemScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
-            guard let mountain = childNode(withName: "MountainNode"), let mountainButton = childNode(withName: "MountainButtonNode"),
-                let addGreyWolfButton = childNode(withName: "AddGreyWolfButtonNode"), let deleteGreyWolfButton = childNode(withName: "DeleteGreyWolfButtonNode"),
-                let addArcticHareButton = childNode(withName: "AddArcticHareButtonNode"), let deleteArcticHareButton = childNode(withName: "DeleteArcticHareButtonNode"), let addArcticWildflowerButton = childNode(withName: "AddArcticWildflowerButton"), let deleteArcticWildflowerButton = childNode(withName: "DeleteArcticWildflowerButton"), let playButton = childNode(withName: "PlayButton") else {
+            guard let mountain = childNode(withName: "MountainNode"), let playButton = childNode(withName: "PlayButton"), let toolbox = childNode(withName: "ToolBox"), let toolBoxButton = childNode(withName: "ToolBoxButton") else {
+                print("1st checks didn't work")
+                break
+            }
+            
+            guard let mountainButton = toolbox.childNode(withName: "MountainButtonNode"), let addGreyWolfButton = toolbox.childNode(withName: "AddGreyWolfButtonNode"), let deleteGreyWolfButton = toolbox.childNode(withName: "DeleteGreyWolfButtonNode"), let addArcticHareButton = toolbox.childNode(withName: "AddArcticHareButtonNode"), let deleteArcticHareButton = toolbox.childNode(withName: "DeleteArcticHareButtonNode"), let addArcticWildflowerButton = toolbox.childNode(withName: "AddArcticWildflowerButton"), let deleteArcticWildflowerButton = toolbox.childNode(withName: "DeleteArcticWildflowerButton") else {
+                print("2nd checks didn't work")
                 break
             }
             
@@ -165,43 +169,50 @@ class GameScene: SKScene, EcosystemScene {
                 }
             }
             
-            if mountainButton.contains(location) {
-                if mountain.alpha == 0 {
-                    let animate = SKAction(named: "fadeInMountain")
-                    mountain.run(animate!)
-                } else if mountain.alpha == 1{
-                    let animate = SKAction(named: "fadeOutMountain")
-                    mountain.run(animate!)
-                }
-                
-            } else if playButton.contains(location) {
+            if playButton.contains(location) {
                 evolveEcosystem()
                 //self.isPaused = false
                 print("Current Sprite Statuses:")
                 
-            }else if addGreyWolfButton.contains(location) {
-                addOrganismFromName("Grey Wolf")
-                
-            } else if deleteGreyWolfButton.contains(location) {
-                deleteOrganismFromName("Grey Wolf")
+            } else if toolBoxButton.contains(location) {
+                if toolbox.isHidden {
+                    toolbox.isHidden = false
+                } else {toolbox.isHidden = true}
             
-            } else if addArcticHareButton.contains(location) {
-                addOrganismFromName("Arctic Hare")
                 
-            } else if deleteArcticHareButton.contains(location) {
-                deleteOrganismFromName("Arctic Hare")
+            } else if toolbox.contains(location) && toolbox.isHidden == false {
+                let toolboxLocation = touch.location(in: toolbox)
                 
-            } else if addArcticWildflowerButton.contains(location) {
-                addOrganismFromName("Arctic Wildflower")
+                if mountainButton.contains(toolboxLocation) {
+                    if mountain.alpha == 0 {
+                        let animate = SKAction(named: "fadeInMountain")
+                        mountain.run(animate!)
+                    } else if mountain.alpha == 1{
+                        let animate = SKAction(named: "fadeOutMountain")
+                        mountain.run(animate!)
+                    }
                 
-            } else if deleteArcticWildflowerButton.contains(location) {
-                deleteOrganismFromName("Arctic Wildflower")
-            } else {
-                addOrganismFromName("Penguin") //Proof of concept for aerial movement
+                } else if addGreyWolfButton.contains(toolboxLocation) {
+                    addOrganismFromName("Grey Wolf")
+                
+                } else if deleteGreyWolfButton.contains(toolboxLocation) {
+                    deleteOrganismFromName("Grey Wolf")
+            
+                } else if addArcticHareButton.contains(toolboxLocation) {
+                    addOrganismFromName("Arctic Hare")
+                
+                } else if deleteArcticHareButton.contains(toolboxLocation) {
+                    deleteOrganismFromName("Arctic Hare")
+                
+                } else if addArcticWildflowerButton.contains(toolboxLocation) {
+                    addOrganismFromName("Arctic Wildflower")
+                
+                } else if deleteArcticWildflowerButton.contains(toolboxLocation) {
+                    deleteOrganismFromName("Arctic Wildflower")
+                
+                }
             }
-            
         }
-        
     }
     
     func addOrganismFromName(_ name: String) {

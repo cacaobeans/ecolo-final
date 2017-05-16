@@ -38,9 +38,8 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         ecosystemModel.addNewFactor(named: "Arctic Wildflower", ofType: .Producer, ofMovementType: .Static, withLevel: 3)
         ecosystemModel.addNewFactor(named: "Arctic Hare", ofType: .Consumer, ofMovementType: .Terrestrial, withLevel: 3)
         ecosystemModel.addNewFactor(named: "Grey Wolf", ofType: .Consumer, ofMovementType: .Terrestrial, withLevel: 1)
-        ecosystemModel.addNewFactor(named: "Penguin", ofType: .Consumer, ofMovementType: .Aerial, withLevel: 3) //These aren't actually penguins, proof of concept for aerial movement
-        
-        //ecosystemModel.addNewFactor(named: "Sun", ofType: .Resource, withLevel: 3)
+        //ecosystemModel.addNewFactor(named: "Penguin", ofType: .Consumer, ofMovementType: .Aerial, withLevel: 3) //These aren't actually penguins, proof of concept for aerial movement
+        ecosystemModel.addNewFactor(named: "Sun", ofType: .Resource, ofMovementType: .Static, withLevel: 3)
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.  Also, get the SKScene from the loaded GKScene
