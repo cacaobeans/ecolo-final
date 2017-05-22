@@ -47,22 +47,6 @@ class SKOrganismNode: SKSpriteNode {
         return CGPoint(x: random(min: domain.position.x - domain.frame.size.width/2, max: domain.position.x + domain.frame.size.width/2), y: random(min: domain.position.y - domain.frame.size.height/2, max: domain.position.y + domain.frame.size.height/2))
     }
     
-    /*
-    func randomPointOnGround() -> CGPoint? {
-        guard let ground = scene!.childNode(withName: "Ground") else {
-            return nil
-        }
-        return CGPoint(x: random(min: ground.position.x - ground.frame.size.width/2, max: ground.position.x + ground.frame.size.width/2), y: random(min: ground.position.y - ground.frame.size.height/2, max: ground.position.y + ground.frame.size.height/2))
-    }
-    
-    func randomPointOnSky() -> CGPoint? {
-        guard let sky = scene!.childNode(withName: "Sky") else {
-            return nil
-        }
-        return CGPoint(x: random(min: sky.position.x - sky.frame.size.width/2, max: sky.position.x + sky.frame.size.width/2), y: random(min: sky.position.y - sky.frame.size.height/2, max: sky.position.y + sky.frame.size.height/2))
-    }
-    */
-    
     required init(factor: Factor) {
         self.factor = factor
         

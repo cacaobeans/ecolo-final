@@ -13,6 +13,7 @@ import GameplayKit
 protocol EcosystemSceneDelegate: SKSceneDelegate {
     @discardableResult func introduceFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool
     func evolveEcosystem()
+    func changeSunlightLevel(to value: CGFloat)
 }
 
 class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
@@ -30,6 +31,12 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         gameScene.render(factors: ecosystemModel.getFactorsWithInteractions())
     }
     
+    func changeSunlightLevel(to value: CGFloat) {
+        if let sunlight: Factor = ecosystemModel.getSunlight() {
+            sunlight.level = Double(value)
+        }
+    }
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -39,7 +46,7 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         ecosystemModel.addNewFactor(named: "Arctic Hare", ofType: .Consumer, ofMovementType: .Terrestrial, withLevel: 3)
         ecosystemModel.addNewFactor(named: "Grey Wolf", ofType: .Consumer, ofMovementType: .Terrestrial, withLevel: 1)
         //ecosystemModel.addNewFactor(named: "Penguin", ofType: .Consumer, ofMovementType: .Aerial, withLevel: 3) //These aren't actually penguins, proof of concept for aerial movement
-        ecosystemModel.addNewFactor(named: "Sun", ofType: .Resource, ofMovementType: .Static, withLevel: 3)
+        ecosystemModel.addNewFactor(named: "Sunlight", ofType: .Resource, ofMovementType: .Static, withLevel: 3)
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.  Also, get the SKScene from the loaded GKScene

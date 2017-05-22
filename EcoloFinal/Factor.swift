@@ -71,6 +71,8 @@ class Factor: CustomStringConvertible, Hashable {
         }
     }
     
+    
+    
     // If this factor is a porducer, it needs to screen all of the factors affecting it for type and use the Resources in an alternate carrying capacity calculation.
     private func lvProducer() {
         delta = 0.0
@@ -79,7 +81,7 @@ class Factor: CustomStringConvertible, Hashable {
         if let interactions = delegate.getFactorsWithInteractions()[self] {
             for (affectingFactor, effectCoefficient) in interactions {
                 if affectingFactor.type == .Resource {
-                    carryingCapacityReduction += effectCoefficient * self.level * affectingFactor.level
+                    carryingCapacityReduction += 0.01 * (effectCoefficient - affectingFactor.level) * (effectCoefficient - affectingFactor.level) //effectCoefficient represents the ideal level of Resource (ranging from -10 to 10), affectingFactor.level represents the level of Resource actually available (same range)
                 } else if affectingFactor == self {
                     naturalChangeRate = effectCoefficient
                 } else {

@@ -82,10 +82,10 @@ class Ecosystem: CustomStringConvertible, FactorDelegate {
             // The reason we can't do them both in one step is that in order to calculate the deltas, we need to access the levels of the factors before they're updated.  Only after we've safely computed all of the changes can we update this level.
             for (factor, _) in factors {
                 factor.addDeltaToLevel()
+                print(factor)
             }
         }
     }
-    
     
     // The methods demanded by the delegate:
     func getFactorsWithInteractions() -> [Factor : [Factor : Double]] {
@@ -98,6 +98,16 @@ class Ecosystem: CustomStringConvertible, FactorDelegate {
     
     func getEulerIntervals() -> Int {
         return eulerIntervals
+    }
+    
+    func getSunlight() -> Factor? {
+        var sunlight: Factor? = nil
+        for (factor, _) in factors {
+            if factor.name == "Sunlight" {
+                sunlight = factor
+            }
+        }
+        return sunlight
     }
     
     // Diagnostic and informational functions:

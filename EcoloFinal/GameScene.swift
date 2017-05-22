@@ -34,6 +34,94 @@ class GameScene: SKScene, EcosystemScene {
         super.init(coder: aDecoder)
     }*/
     
+    let sky = SKSpriteNode(color: .clear, size: CGSize(width: 1300, height: 570))
+    let ground = SKSpriteNode(color: .clear, size: CGSize(width: 1300, height: 160))
+    
+    let sunlightSliderThumb = SKSpriteNode(imageNamed: "SliderThumb")
+    let sunlightSliderScale = SKSpriteNode(imageNamed: "SliderScale")
+    let rainfallSliderThumb = SKSpriteNode(imageNamed: "SliderThumb")
+    let rainfallSliderScale = SKSpriteNode(imageNamed: "SliderScale")
+    let temperatureSliderThumb = SKSpriteNode(imageNamed: "SliderThumb")
+    let temperatureSliderScale = SKSpriteNode(imageNamed: "SliderScale")
+    
+    let dimPanel = SKSpriteNode(color: .black, size: CGSize(width: 2000, height: 2000))
+    let brightPanel = SKSpriteNode(color: .white, size: CGSize(width: 2000, height: 2000))
+    
+    let coldPanel = SKSpriteNode(color: .cyan, size: CGSize(width: 2000, height: 2000))
+    let warmPanel = SKSpriteNode(color: .red, size: CGSize(width: 2000, height: 2000))
+    
+    override func didMove(to view: SKView) {
+        
+        //Set up rainfall
+        let path = Bundle.main.path(forResource: "Rain", ofType: "sks")
+        let rainParticle = NSKeyedUnarchiver.unarchiveObject(withFile: path!) as! SKEmitterNode
+        
+        rainParticle.particleBirthRate = 0
+        rainParticle.speed = 500
+        rainParticle.position = CGPoint(x: self.size.width/2, y: self.size.height)
+        rainParticle.name = "rainParticle"
+        rainParticle.targetNode = self.scene
+        
+        self.addChild(rainParticle)
+        
+        //Set up domains
+        sky.position = CGPoint(x: 0, y: 200)
+        sky.name = "Sky"
+        ground.position = CGPoint(x: 0, y: -400)
+        ground.name = "Ground"
+        addChild(sky)
+        addChild(ground)
+        
+        //Set up sunlight
+        dimPanel.alpha = 0.0
+        dimPanel.zPosition = 1000
+        brightPanel.alpha = 0.0
+        brightPanel.zPosition = 1000
+        addChild(dimPanel)
+        addChild(brightPanel)
+        
+        //Set up temperature
+        coldPanel.alpha = 0.0
+        coldPanel.zPosition = 1000
+        warmPanel.alpha = 0.0
+        warmPanel.zPosition = 1000
+        addChild(coldPanel)
+        addChild(warmPanel)
+        
+        if let toolbox = childNode(withName: "ToolBox") {
+            
+            sunlightSliderThumb.size = CGSize(width: 11.059, height: 4.89)
+            sunlightSliderScale.size = CGSize(width: 95, height: 1)
+            let sunlightSlider = SKSliderNode(thumbSprite: sunlightSliderThumb, scaleSprite: sunlightSliderScale, thumbSpriteActive: nil, scaleSpriteActive: nil, method: changeSunlight)
+            
+            temperatureSliderThumb.size = CGSize(width: 11.059, height: 4.89)
+            temperatureSliderScale.size = CGSize(width: 95, height: 1)
+            let temperatureSlider = SKSliderNode(thumbSprite: temperatureSliderThumb, scaleSprite: temperatureSliderScale, thumbSpriteActive: nil, scaleSpriteActive: nil, method: changeTemperature)
+            
+            rainfallSliderThumb.size = CGSize(width: 11.059, height: 4.89)
+            rainfallSliderScale.size = CGSize(width: 95, height: 1)
+            let rainfallSlider = SKSliderNode(thumbSprite: rainfallSliderThumb, scaleSprite: rainfallSliderScale, thumbSpriteActive: nil, scaleSpriteActive: nil, method: changeRainfall)
+
+            toolbox.isHidden = true
+            
+            sunlightSlider.name = "SunlightSlider"
+            temperatureSlider.name = "TemperatureSlider"
+            rainfallSlider.name = "RainfallSlider"
+            
+            rainfallSlider.value = 0
+            
+            sunlightSlider.position = CGPoint(x: 0, y: 25)
+            temperatureSlider.position = CGPoint(x: 0, y: 16)
+            rainfallSlider.position = CGPoint(x: 0, y: 7)
+            
+            toolbox.addChild(sunlightSlider)
+            toolbox.addChild(temperatureSlider)
+            toolbox.addChild(rainfallSlider)
+        
+        }
+        
+    }
+    
     @discardableResult func introduceFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool {
         return (delegate as! EcosystemSceneDelegate).introduceFactor(named: name, ofType: type, ofMovementType: movement, withLevel: level)
     }
@@ -153,7 +241,7 @@ class GameScene: SKScene, EcosystemScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
-            guard let mountain = childNode(withName: "MountainNode"), let playButton = childNode(withName: "PlayButton"), let toolbox = childNode(withName: "ToolBox"), let toolBoxButton = childNode(withName: "ToolBoxButton") else {
+            guard let playButton = childNode(withName: "PlayButton"), let toolbox = childNode(withName: "ToolBox"), let toolBoxButton = childNode(withName: "ToolBoxButton") else {
                 print("1st checks didn't work")
                 break
             }
@@ -184,13 +272,7 @@ class GameScene: SKScene, EcosystemScene {
                 let toolboxLocation = touch.location(in: toolbox)
                 
                 if mountainButton.contains(toolboxLocation) {
-                    if mountain.alpha == 0 {
-                        let animate = SKAction(named: "fadeInMountain")
-                        mountain.run(animate!)
-                    } else if mountain.alpha == 1{
-                        let animate = SKAction(named: "fadeOutMountain")
-                        mountain.run(animate!)
-                    }
+                    toggleMountain()
                 
                 } else if addGreyWolfButton.contains(toolboxLocation) {
                     addOrganismFromName("Grey Wolf")
@@ -215,6 +297,62 @@ class GameScene: SKScene, EcosystemScene {
         }
     }
     
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        changeSunlight()
+        
+        //self.isPaused = true
+    }
+
+    func changeSunlight() {
+        if let toolbox = childNode(withName: "ToolBox"), let sunlightSlider = toolbox.childNode(withName: "SunlightSlider") as! SKSliderNode? {
+        
+            let alphaModifier = (sunlightSlider.value - 0.5) / 2
+            if alphaModifier > 0 {
+                brightPanel.alpha = alphaModifier
+                dimPanel.alpha = 0.0
+            } else if alphaModifier < 0 {
+                brightPanel.alpha = 0.0
+                dimPanel.alpha = alphaModifier * -1
+            } else {
+                brightPanel.alpha = 0.0
+                dimPanel.alpha = 0.0
+            }
+        
+            let sunlightValue = sunlightSlider.value * 20
+            (delegate as! EcosystemSceneDelegate).changeSunlightLevel(to: sunlightValue)
+            }
+    }
+    
+    func changeRainfall() {
+        if let rainclouds = childNode(withName: "RainCloudsNode"), let rainParticle = childNode(withName: "rainParticle") as! SKEmitterNode?, let toolbox = childNode(withName: "ToolBox"), let rainfallSlider = toolbox.childNode(withName: "RainfallSlider")  as! SKSliderNode? {
+            
+            rainclouds.alpha = rainfallSlider.value * 0.75
+            
+            rainParticle.particleBirthRate = rainfallSlider.value * 150
+            rainParticle.speed = 500 + rainfallSlider.value * 1000
+            
+            //change rainfall value in model
+        }
+    }
+    
+    func changeTemperature() {
+        if let toolbox = childNode(withName: "ToolBox"), let temperatureSlider = toolbox.childNode(withName: "TemperatureSlider") as! SKSliderNode? {
+            
+            let alphaModifier = (temperatureSlider.value - 0.5) / 4
+            if alphaModifier > 0 {
+                warmPanel.alpha = alphaModifier
+                coldPanel.alpha = 0.0
+            } else if alphaModifier < 0 {
+                warmPanel.alpha = 0.0
+                coldPanel.alpha = alphaModifier * -1
+            } else {
+                warmPanel.alpha = 0.0
+                coldPanel.alpha = 0.0
+            }
+        }
+
+    }
+    
     func addOrganismFromName(_ name: String) {
         for (factor, _) in organismNodes {
             if factor.name == name {
@@ -231,11 +369,18 @@ class GameScene: SKScene, EcosystemScene {
         }
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //self.isPaused = true
+    func toggleMountain() {
+        if let mountain = childNode(withName: "MountainNode") {
+        
+        if mountain.alpha == 0 {
+            let animate = SKAction(named: "fadeInMountain")
+            mountain.run(animate!)
+        } else if mountain.alpha == 1{
+            let animate = SKAction(named: "fadeOutMountain")
+            mountain.run(animate!)
+        }
+        }
     }
-    
-    
     
 }
 

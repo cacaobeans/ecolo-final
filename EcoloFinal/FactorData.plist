@@ -4,13 +4,15 @@
 <dict>
 	<key>Resource</key>
 	<dict>
-		<key>Sun</key>
+		<key>Sunlight</key>
 		<dict/>
 	</dict>
 	<key>Producer</key>
 	<dict>
 		<key>Arctic Wildflower</key>
 		<dict>
+			<key>Sunlight</key>
+			<string>10.0</string>
 			<key>Arctic Wildflower</key>
 			<string>3.0</string>
 			<key>Arctic Hare</key>

@@ -19,6 +19,8 @@
 		5923740E1E92B03C00878806 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5923740D1E92B03C00878806 /* Assets.xcassets */; };
 		592374111E92B03C00878806 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5923740F1E92B03C00878806 /* LaunchScreen.storyboard */; };
 		593CBEEC1EB7BC8A00304313 /* SKOrganismNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593CBEEB1EB7BC8A00304313 /* SKOrganismNode.swift */; };
+		59D482B11ECF83EF002447DC /* SKSliderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D482B01ECF83EF002447DC /* SKSliderNode.swift */; };
+		59D482B31ED2257F002447DC /* Rain.sks in Resources */ = {isa = PBXBuildFile; fileRef = 59D482B21ED2257F002447DC /* Rain.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +38,8 @@
 		592374101E92B03C00878806 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		592374121E92B03C00878806 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		593CBEEB1EB7BC8A00304313 /* SKOrganismNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKOrganismNode.swift; sourceTree = "<group>"; };
+		59D482B01ECF83EF002447DC /* SKSliderNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKSliderNode.swift; sourceTree = "<group>"; };
+		59D482B21ED2257F002447DC /* Rain.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Rain.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +85,8 @@
 				592374001E92B03C00878806 /* AppDelegate.swift */,
 				592374021E92B03C00878806 /* GameScene.sks */,
 				592374041E92B03C00878806 /* Actions.sks */,
+				59D482B01ECF83EF002447DC /* SKSliderNode.swift */,
+				59D482B21ED2257F002447DC /* Rain.sks */,
 				592374061E92B03C00878806 /* GameScene.swift */,
 				593CBEEB1EB7BC8A00304313 /* SKOrganismNode.swift */,
 				592374081E92B03C00878806 /* EcosystemViewController.swift */,
@@ -155,6 +161,7 @@
 			files = (
 				5923740C1E92B03C00878806 /* Main.storyboard in Resources */,
 				04312C4B1EB7C0F3008FF2E6 /* FactorData.plist in Resources */,
+				59D482B31ED2257F002447DC /* Rain.sks in Resources */,
 				592374031E92B03C00878806 /* GameScene.sks in Resources */,
 				5923740E1E92B03C00878806 /* Assets.xcassets in Resources */,
 				592374111E92B03C00878806 /* LaunchScreen.storyboard in Resources */,
@@ -175,6 +182,7 @@
 				592374091E92B03C00878806 /* EcosystemViewController.swift in Sources */,
 				592374011E92B03C00878806 /* AppDelegate.swift in Sources */,
 				04312C491EB7C0F3008FF2E6 /* Factor.swift in Sources */,
+				59D482B11ECF83EF002447DC /* SKSliderNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
