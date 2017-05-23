@@ -14,6 +14,11 @@ protocol EcosystemSceneDelegate: SKSceneDelegate {
     @discardableResult func introduceFactor(named name: String, ofType type: FactorType, ofMovementType movement: MovementType, withLevel level: Double) -> Bool
     func evolveEcosystem()
     func changeSunlightLevel(to value: CGFloat)
+    func changeRainfallLevel(to value: CGFloat)
+    func changeTemperatureLevel(to value: CGFloat)
+    func getSunlight() -> Factor?
+    func getRainfall() -> Factor?
+    func getTemperature() -> Factor?
 }
 
 class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
@@ -37,6 +42,28 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         }
     }
     
+    func changeRainfallLevel(to value: CGFloat) {
+        if let rainfall: Factor = ecosystemModel.getRainfall() {
+            rainfall.level = Double(value)
+        }
+    }
+    
+    func changeTemperatureLevel(to value: CGFloat) {
+        if let temperature: Factor = ecosystemModel.getTemperature() {
+            temperature.level = Double(value)
+        }
+    }
+    
+    func getSunlight() -> Factor? {
+        return ecosystemModel.getSunlight()
+    }
+    func getRainfall() -> Factor? {
+        return ecosystemModel.getRainfall()
+    }
+    func getTemperature() -> Factor? {
+        return ecosystemModel.getTemperature()
+    }
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -46,7 +73,9 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         ecosystemModel.addNewFactor(named: "Arctic Hare", ofType: .Consumer, ofMovementType: .Terrestrial, withLevel: 3)
         ecosystemModel.addNewFactor(named: "Grey Wolf", ofType: .Consumer, ofMovementType: .Terrestrial, withLevel: 1)
         //ecosystemModel.addNewFactor(named: "Penguin", ofType: .Consumer, ofMovementType: .Aerial, withLevel: 3) //These aren't actually penguins, proof of concept for aerial movement
-        ecosystemModel.addNewFactor(named: "Sunlight", ofType: .Resource, ofMovementType: .Static, withLevel: 3)
+        ecosystemModel.addNewFactor(named: "Sunlight", ofType: .Resource, ofMovementType: .Static, withLevel: 10)
+        ecosystemModel.addNewFactor(named: "Rainfall", ofType: .Resource, ofMovementType: .Static, withLevel: 0)
+        ecosystemModel.addNewFactor(named: "Temperature", ofType: .Resource, ofMovementType: .Static, withLevel: 2)
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.  Also, get the SKScene from the loaded GKScene

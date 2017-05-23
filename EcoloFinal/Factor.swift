@@ -95,10 +95,27 @@ class Factor: CustomStringConvertible, Hashable {
     // If this factor is a consumer, then the job is a lot simpler:
     private func lvConsumer() {
         delta = 0.0
+        var carryingCapacityReduction = 0.0
+        var naturalChangeRate = 0.0
+        if let interactions = delegate.getFactorsWithInteractions()[self] {
+            for (affectingFactor, effectCoefficient) in interactions {
+                if affectingFactor.type == .Resource {
+                    carryingCapacityReduction += 0.01 * (effectCoefficient - affectingFactor.level) * (effectCoefficient - affectingFactor.level) //effectCoefficient represents the ideal level of Resource (ranging from -10 to 10), affectingFactor.level represents the level of Resource actually available (same range)
+                } else if affectingFactor == self {
+                    naturalChangeRate = effectCoefficient
+                    delta += effectCoefficient * self.level * affectingFactor.level
+                } else {
+                    delta += effectCoefficient * self.level * affectingFactor.level
+                }
+            }
+            delta += naturalChangeRate * self.level * (1 - carryingCapacityReduction)
+        }
+        
+        /*delta = 0.0
         if let interactions = delegate.getFactorsWithInteractions()[self] {
             for (affectingFactor, effectCoefficient) in interactions {
                 delta += effectCoefficient * self.level * affectingFactor.level
             }
-        }
+        }*/
     }
 }

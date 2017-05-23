@@ -37,11 +37,11 @@ class GameScene: SKScene, EcosystemScene {
     let sky = SKSpriteNode(color: .clear, size: CGSize(width: 1300, height: 570))
     let ground = SKSpriteNode(color: .clear, size: CGSize(width: 1300, height: 160))
     
-    let sunlightSliderThumb = SKSpriteNode(imageNamed: "SliderThumb")
+    let sunlightSliderThumb = SKSpriteNode(imageNamed: "SunlightSliderThumb")
     let sunlightSliderScale = SKSpriteNode(imageNamed: "SliderScale")
-    let rainfallSliderThumb = SKSpriteNode(imageNamed: "SliderThumb")
+    let rainfallSliderThumb = SKSpriteNode(imageNamed: "RainfallSliderThumb")
     let rainfallSliderScale = SKSpriteNode(imageNamed: "SliderScale")
-    let temperatureSliderThumb = SKSpriteNode(imageNamed: "SliderThumb")
+    let temperatureSliderThumb = SKSpriteNode(imageNamed: "TemperatureSliderThumb")
     let temperatureSliderScale = SKSpriteNode(imageNamed: "SliderScale")
     
     let dimPanel = SKSpriteNode(color: .black, size: CGSize(width: 2000, height: 2000))
@@ -90,15 +90,15 @@ class GameScene: SKScene, EcosystemScene {
         
         if let toolbox = childNode(withName: "ToolBox") {
             
-            sunlightSliderThumb.size = CGSize(width: 11.059, height: 4.89)
+            sunlightSliderThumb.size = CGSize(width: 17.694, height: 7.825)
             sunlightSliderScale.size = CGSize(width: 95, height: 1)
             let sunlightSlider = SKSliderNode(thumbSprite: sunlightSliderThumb, scaleSprite: sunlightSliderScale, thumbSpriteActive: nil, scaleSpriteActive: nil, method: changeSunlight)
             
-            temperatureSliderThumb.size = CGSize(width: 11.059, height: 4.89)
+            temperatureSliderThumb.size = CGSize(width: 17.694, height: 7.825)
             temperatureSliderScale.size = CGSize(width: 95, height: 1)
             let temperatureSlider = SKSliderNode(thumbSprite: temperatureSliderThumb, scaleSprite: temperatureSliderScale, thumbSpriteActive: nil, scaleSpriteActive: nil, method: changeTemperature)
             
-            rainfallSliderThumb.size = CGSize(width: 11.059, height: 4.89)
+            rainfallSliderThumb.size = CGSize(width: 17.694, height: 7.825)
             rainfallSliderScale.size = CGSize(width: 95, height: 1)
             let rainfallSlider = SKSliderNode(thumbSprite: rainfallSliderThumb, scaleSprite: rainfallSliderScale, thumbSpriteActive: nil, scaleSpriteActive: nil, method: changeRainfall)
 
@@ -108,16 +108,22 @@ class GameScene: SKScene, EcosystemScene {
             temperatureSlider.name = "TemperatureSlider"
             rainfallSlider.name = "RainfallSlider"
             
-            rainfallSlider.value = 0
-            
-            sunlightSlider.position = CGPoint(x: 0, y: 25)
-            temperatureSlider.position = CGPoint(x: 0, y: 16)
-            rainfallSlider.position = CGPoint(x: 0, y: 7)
+            sunlightSlider.position = CGPoint(x: 0, y: 28)
+            temperatureSlider.position = CGPoint(x: 0, y: 19)
+            rainfallSlider.position = CGPoint(x: 0, y: 10)
             
             toolbox.addChild(sunlightSlider)
             toolbox.addChild(temperatureSlider)
             toolbox.addChild(rainfallSlider)
-        
+
+            sunlightSlider.value = (CGFloat((delegate as! EcosystemSceneDelegate).getSunlight()!.level) / 20)
+            temperatureSlider.value = (CGFloat((delegate as! EcosystemSceneDelegate).getTemperature()!.level) / 20)
+            rainfallSlider.value = (CGFloat((delegate as! EcosystemSceneDelegate).getRainfall()!.level) / 20)
+            
+            changeSunlight()
+            changeTemperature()
+            changeRainfall()
+            
         }
         
     }
@@ -326,12 +332,13 @@ class GameScene: SKScene, EcosystemScene {
     func changeRainfall() {
         if let rainclouds = childNode(withName: "RainCloudsNode"), let rainParticle = childNode(withName: "rainParticle") as! SKEmitterNode?, let toolbox = childNode(withName: "ToolBox"), let rainfallSlider = toolbox.childNode(withName: "RainfallSlider")  as! SKSliderNode? {
             
-            rainclouds.alpha = rainfallSlider.value * 0.75
+            rainclouds.alpha = rainfallSlider.value * 0.85
             
             rainParticle.particleBirthRate = rainfallSlider.value * 150
             rainParticle.speed = 500 + rainfallSlider.value * 1000
             
-            //change rainfall value in model
+            let rainfallValue = rainfallSlider.value * 20
+            (delegate as! EcosystemSceneDelegate).changeRainfallLevel(to: rainfallValue)
         }
     }
     
@@ -349,6 +356,9 @@ class GameScene: SKScene, EcosystemScene {
                 warmPanel.alpha = 0.0
                 coldPanel.alpha = 0.0
             }
+            let temperatureValue = temperatureSlider.value * 20
+            (delegate as! EcosystemSceneDelegate).changeTemperatureLevel(to: temperatureValue)
+            
         }
 
     }

@@ -110,6 +110,26 @@ class Ecosystem: CustomStringConvertible, FactorDelegate {
         return sunlight
     }
     
+    func getRainfall() -> Factor? {
+        var rainfall: Factor? = nil
+        for (factor, _) in factors {
+            if factor.name == "Rainfall" {
+                rainfall = factor
+            }
+        }
+        return rainfall
+    }
+    
+    func getTemperature() -> Factor? {
+        var temperature: Factor? = nil
+        for (factor, _) in factors {
+            if factor.name == "Temperature" {
+                temperature = factor
+            }
+        }
+        return temperature
+    }
+    
     // Diagnostic and informational functions:
     var description: String {
         return self.name
