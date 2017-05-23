@@ -74,7 +74,7 @@ class EcosystemViewController: UIViewController, EcosystemSceneDelegate {
         ecosystemModel.addNewFactor(named: "Grey Wolf", ofType: .Consumer, ofMovementType: .Terrestrial, withLevel: 1)
         //ecosystemModel.addNewFactor(named: "Penguin", ofType: .Consumer, ofMovementType: .Aerial, withLevel: 3) //These aren't actually penguins, proof of concept for aerial movement
         ecosystemModel.addNewFactor(named: "Sunlight", ofType: .Resource, ofMovementType: .Static, withLevel: 10)
-        ecosystemModel.addNewFactor(named: "Rainfall", ofType: .Resource, ofMovementType: .Static, withLevel: 0)
+        ecosystemModel.addNewFactor(named: "Rainfall", ofType: .Resource, ofMovementType: .Static, withLevel: 2)
         ecosystemModel.addNewFactor(named: "Temperature", ofType: .Resource, ofMovementType: .Static, withLevel: 2)
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content

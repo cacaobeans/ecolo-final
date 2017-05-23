@@ -16,9 +16,9 @@
 		<key>Arctic Wildflower</key>
 		<dict>
 			<key>Temperature</key>
-			<string>2.0</string>
+			<string>7.0</string>
 			<key>Rainfall</key>
-			<string>5.0</string>
+			<string>10.0</string>
 			<key>Sunlight</key>
 			<string>10.0</string>
 			<key>Arctic Wildflower</key>
@@ -45,7 +45,7 @@
 		<key>Arctic Hare</key>
 		<dict>
 			<key>Temperature</key>
-			<string>2.0</string>
+			<string>7.0</string>
 			<key>Arctic Hare</key>
 			<string>-1.0</string>
 			<key>Grey Wolf</key>
@@ -56,7 +56,7 @@
 		<key>Grey Wolf</key>
 		<dict>
 			<key>Temperature</key>
-			<string>8.0</string>
+			<string>10.0</string>
 			<key>Grey Wolf</key>
 			<string>-0.5</string>
 			<key>Arctic Hare</key>

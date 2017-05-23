@@ -49,11 +49,7 @@ class SKOrganismNode: SKSpriteNode {
     
     required init(factor: Factor) {
         self.factor = factor
-        
-        //self.xScale = 0.2
-        //self.yScale = 0.2
-        //self.zPosition = 3
-        
+
         self.spriteStatus = .Standby
         let texture = SKTexture(imageNamed: factor.name)
         super.init(texture: texture, color: UIColor.clear, size: texture.size())
